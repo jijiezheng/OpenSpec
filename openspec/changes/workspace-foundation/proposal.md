@@ -1,28 +1,28 @@
-## Why
+## 为什么
 
-Users need a workspace to feel like the obvious home for planning across multiple repos or folders.
+用户需要 workspace 感觉像是跨多个 repos 或文件夹规划的明显之家。
 
-They should be able to think:
+他们应该能够这样想：
 
 ```text
-I have repos or folders that are often planned together.
-I create an OpenSpec workspace.
-That workspace is where changes live.
-My code stays where it is.
-OpenSpec links the workspace to those local paths.
+我有经常一起规划的 repos 或文件夹。
+我创建一个 OpenSpec workspace。
+那个 workspace 是变更所在的地方。
+我的代码保持在原处。
+OpenSpec 将 workspace 链接到那些本地路径。
 ```
 
-A workspace is not a feature. It is the durable planning home. Individual features, fixes, and projects are changes inside the workspace.
+Workspace 不是功能。它是跨 repo 规划的持久协调之家。单个功能、修复和项目是 workspace 内的变更。
 
-Users should not have to choose a storage location, create a change early, or understand internal workspace state before OpenSpec can orient itself.
+用户不应被迫选择存储位置、 early 创建变更或在 OpenSpec 可以 orient 自身之前了解内部 workspace 状态。
 
-The POC proved that workspace state is useful. This reimplementation should turn that into a simple product model that users and agents can explain without special-case vocabulary.
+POC 证明了 workspace 状态是有用的。这个重新实现应该把它变成一个用户和 agent 可以在没有特殊 case 词汇的情况下解释的简单产品模型。
 
-## What Changes
+## 什么变更
 
-This change defines the user-facing foundation for OpenSpec workspaces.
+此变更定义了 OpenSpec workspaces 的用户面向基础。
 
-An OpenSpec workspace has a recognizable planning home:
+OpenSpec workspace 有一个可识别的规划之家：
 
 ```text
 workspace-root/
@@ -30,113 +30,114 @@ workspace-root/
   .openspec-workspace/
 ```
 
-`changes/` is where workspace-level planning lives. `.openspec-workspace/` identifies the directory as an OpenSpec workspace and stores workspace state.
+`changes/` 是 workspace 级规划所在的地方。`.openspec-workspace/` 将目录标识为 OpenSpec workspace 并存储 workspace 状态。
 
-OpenSpec-managed workspaces live in one standard location:
+OpenSpec 管理的 workspaces 位于一个标准位置：
 
 ```text
 <global-data-dir>/workspaces/
 ```
 
-Users should not need to choose that location. OpenSpec still shows the workspace path after setup so users know where planning files live. This foundation slice does not provide a workspace-specific environment-variable or configuration override for managed workspace storage.
+用户不需要选择那个位置。OpenSpec 仍在设置后显示 workspace 路径，以便用户知道规划文件所在的位置。这个基础 slice 不提供用于更改托管 workspace 存储的特定于 workspace 的环境变量或配置覆盖。
 
-OpenSpec also keeps a lightweight local registry of known workspaces on the current machine. The registry powers global commands, pickers, and listing, but each workspace folder remains the source of truth.
+OpenSpec 还保留了一个已知 workspaces 的轻量级本地注册表。注册表为全局命令、选择器和列表提供支持，但每个 workspace 文件夹仍然是真实来源。
 
-Workspace state is split by user expectation:
+Workspace 状态按用户期望分割：
 
-- shared workspace information can move between machines
-- local checkout paths stay local to each machine
-- linked repos and folders are referred to by stable link names, not by absolute paths
+- 可以跨机器移动的共享 workspace 信息
+- 本地 checkout 路径保持在本地
+- 链接的 repos 和文件夹通过稳定的链接名称引用，而不是绝对路径
 
-A linked path can be a full repo, a folder inside a monorepo, or another existing folder the workspace should plan against. A linked path does not need repo-local `openspec/` state before it can be included in workspace planning. Repo-local OpenSpec state may still matter later for implementation, verification, or archive workflows, but it is not a prerequisite for planning visibility.
+链接路径可以是完整的 repo、monorepo 内的文件夹或 workspace 应该规划的其他现有文件夹。链接路径不需要在包含在 workspace 规划之前具有 repo 本地的 `openspec/` 状态。Repo 本地的 OpenSpec 状态可能在以后用于实现、验证或归档工作，但不是规划可见性的先决条件。
 
-Native Windows/PowerShell and WSL2 are both supported. Each runtime uses its own path conventions. OpenSpec does not translate paths between Windows and WSL in this foundation slice.
+支持原生 Windows/PowerShell 和 WSL2。每种运行时使用自己的路径约定。OpenSpec 在这个基础 slice 中不翻译 Windows 和 WSL 之间的路径。
 
-## Outcome
+## 结果
 
-After this change, later workspace features can rely on one clear product contract:
+在此变更之后，后续 workspace 功能可以依赖一个清晰的产品契约：
 
-- OpenSpec can tell when the user is inside a workspace.
-- OpenSpec knows where to create managed workspaces by default.
-- OpenSpec can keep a local registry of known workspaces.
-- A workspace has one visible planning area: `changes/`.
-- Workspace state is distinguishable from repo-local `openspec/` state.
-- Shared workspace state does not force one user's local paths onto another user.
-- Workspace planning can reference existing repos or folders by stable link names.
-- Linked repos or folders do not need repo-local OpenSpec state for workspace planning.
-- Multi-repo and large-monorepo work can use the same workspace planning model.
-- Repo-owned specs and implementation remain owned by their repos or source areas.
-- Windows, PowerShell, and WSL2 path behavior is predictable.
+- OpenSpec 可以判断用户是否在 workspace 内。
+- OpenSpec 知道默认在哪里创建托管 workspaces。
+- OpenSpec 可以保留已知 workspaces 的本地注册表。
+- Workspace 有一个可见的规划区域：`changes/`。
+- Workspace 状态与 repo 本地 `openspec/` 状态可区分。
+- 共享 workspace 状态不会将一个用户的本地路径强加给另一个用户。
+- Workspace 规划可以通过稳定的链接名称引用现有 repos 或文件夹。
+- 链接的 repos 或文件夹不需要 repo 本地 OpenSpec 状态用于 workspace 规划。
+- 多 repo 和大型 monorepo 工作可以使用相同的 workspace 规划模型。
+- Repo 拥有的 specs 和实现仍归其 repos 或源区域所有。
+- Windows、PowerShell 和 WSL2 路径行为可预测。
 
-This change does not deliver the full workspace workflow. It gives `workspace-create-and-register-repos` the foundation it needs to add the first user-facing commands.
+此变更不提供完整的 workspace 工作流。它为 `workspace-create-and-register-repos` 提供了添加第一个用户面向命令所需的基础。
 
-## POC Findings
+## POC 发现
 
-Behavior to preserve:
+要保留的行为：
 
-- A workspace is a durable coordination home for cross-repo planning.
-- The workspace has a visible `changes/` directory at its root.
-- Linked repos and folders provide the context the workspace can plan against.
-- Stable link names matter more than local checkout paths.
-- Local machine paths should not become shared workspace state.
-- Canonical specs and implementation still belong to the owning repos.
+- Workspace 是跨 repo 规划的持久协调之家。
+- Workspace 在其根目录有一个可见的 `changes/` 目录。
+- 链接的 repos 和文件夹提供 workspace 可以规划上下文的上下文。
+- 稳定的链接名称比本地 checkout 路径更重要。
+- 本地机器路径不应成为共享 workspace 状态。
+- 规范 specs 和实现仍属于其拥有 repos。
+- 链接名称在使用中很重要。
 
-Lessons to carry forward:
+要携带的教训：
 
-- The POC's hidden `.openspec/` workspace metadata shape made workspace state too easy to confuse with repo-local OpenSpec state.
-- Users should not need to run repo-local `openspec init` inside the workspace root.
-- The POC's requirement that registered repos already have `openspec/` is too strict for planning. Repos and folders should be linkable before they adopt repo-local OpenSpec state.
-- Repo or folder visibility should not depend on creating a change.
-- Workspace setup should not imply repo-local implementation, branch, worktree, apply, verify, or archive behavior.
-- `add-repo` is too narrow for the user-facing model. Linking an existing repo or folder is clearer.
+- POC 的隐藏 `.openspec/` workspace 元数据形状使 workspace 状态太容易与 repo 本地 OpenSpec 状态混淆。
+- 用户不需要在 workspace 根目录内运行 repo 本地的 `openspec init`。
+- POC 要求注册的 repos 已有 `openspec/` 对于规划来说太严格了。Repos 和文件夹应该在采用 repo 本地 OpenSpec 状态之前可链接。
+- Repo 或文件夹可见性不应取决于创建变更。
+- Workspace 设置不应暗示 repo 本地实现、branch、worktree、apply、verify 或归档行为。
+- `add-repo` 对于用户面向的模型来说太窄了。链接现有 repo 或文件夹更清晰。
 
-## Decisions
+## 决策
 
-- Workspace identity directory: `.openspec-workspace/`.
-- Workspace identity file: `.openspec-workspace/workspace.yaml`.
-- Workspace name: a valid folder name for the current OS, excluding empty names, `.`/`..`, and path separators.
-- Workspace name usage: stored in `workspace.yaml`, used as the default managed workspace folder name, and used as the local registry name.
-- Planning surface: top-level `changes/`.
-- Local machine state: `.openspec-workspace/local.yaml`.
-- Local machine state exclusion: OpenSpec-created workspaces exclude `.openspec-workspace/local.yaml` from portable collaboration state by default.
-- Local workspace registry: `<global-data-dir>/workspaces/registry.yaml`.
-- Default workspace base: `<global-data-dir>/workspaces/`.
-- Platform behavior: native Windows and WSL2 each use the path conventions of the runtime running OpenSpec.
-- Linked paths may be full repos, monorepo folders, or other existing folders.
-- Link names: non-empty stable names, unique within a workspace, excluding `.`/`..` and path separators.
-- Repo-local `openspec/` state is not required for workspace planning visibility.
-- Linking records the relationship only; it does not create, copy, move, initialize, or edit files in the linked repo or folder.
+- Workspace 身份目录：`.openspec-workspace/`。
+- Workspace 身份文件：`.openspec-workspace/workspace.yaml`。
+- Workspace 名称：当前 OS 的有效文件夹名称，排除空名称、`.`/`..` 和路径分隔符。
+- Workspace 名称使用：存储在 `workspace.yaml` 中，用作默认托管 workspace 文件夹名称，并用作本地注册表名称。
+- 规划表面：顶层 `changes/`。
+- 本地机器状态：`.openspec-workspace/local.yaml`。
+- 本地机器状态排除：OpenSpec 创建的 workspaces 默认从便携式协作状态中排除 `.openspec-workspace/local.yaml`。
+- 本地 workspace 注册表：`<global-data-dir>/workspaces/registry.yaml`。
+- 默认 workspace 基础：`<global-data-dir>/workspaces/`。
+- 平台行为：原生 Windows 和 WSL2 各自使用运行 OpenSpec 的运行时的路径约定。
+- 链接路径可以是完整的 repos、monorepo 文件夹或其他现有文件夹。
+- 链接名称：非空稳定名称，在 workspace 内唯一，排除 `.`/`..` 和路径分隔符。
+- Repo 本地 `openspec/` 状态不是 workspace 规划可见性的必需项。
+- 链接仅记录关系；它不在链接的 repo 或文件夹中创建、复制、移动、初始化或编辑文件。
 
-Planning dependency:
+规划依赖：
 
-- None. This is the first implementation slice.
+- 无。这是第一个实现 slice。
 
-## Non-Goals
+## 非目标
 
-- No complete `openspec workspace setup`, `openspec workspace link`, or `openspec workspace relink` flow yet.
-- No public `openspec workspace create` command in the first user-facing workspace flow.
-- No user-facing command, environment variable, or configuration setting for changing the standard workspace location.
-- No question that asks users where OpenSpec should store workspaces by default.
-- No automatic Windows-to-WSL or WSL-to-Windows path translation.
-- No workspace-open agent launch behavior.
-- No workspace-level proposal creation.
-- No repo-slice apply, verify, archive, branch, or worktree behavior.
-- No copying workspace planning files into linked repos or folders as a side effect of creating, detecting, or linking a workspace.
+- 尚无完整的 `openspec workspace setup`、`openspec workspace link` 或 `openspec workspace relink` 流程。
+- 在第一个用户面向的 workspace 流程中尚无公共 `openspec workspace create` 命令。
+- 用于更改标准 workspace 位置的用户面向命令、环境变量或配置设置尚无。
+- 没有询问用户 OpenSpec 默认应该在哪里存储 workspaces 的问题。
+- 无自动 Windows 到 WSL 或 WSL 到 Windows 路径转换。
+- 无 workspace-open agent 启动行为。
+- 无 workspace 级提案创建。
+- 无 repo-slice apply、verify、archive、branch 或 worktree 行为。
+- 不将 workspace 规划文件复制到链接的 repos 或文件夹中，作为创建、检测或链接 workspace 的副作用。
 
-## Capabilities
+## 能力
 
-### New Capabilities
+### 新能力
 
-- `workspace-foundation`: Defines the product foundation for OpenSpec workspaces.
+- `workspace-foundation`：定义 OpenSpec workspaces 的产品基础。
 
-### Modified Capabilities
+### 修改的能力
 
-- `openspec-conventions`: Describes how coordination workspaces differ from repo-local OpenSpec projects.
+- `openspec-conventions`：描述协调 workspaces 与 repo 本地 OpenSpec 项目的区别。
 
-## Impact
+## 影响
 
-- Workspace recognition and path behavior.
-- Workspace state parsing.
-- Local workspace registry parsing.
-- Documentation and agent guidance for the workspace mental model.
-- Later workspace slices should build on this contract instead of redefining workspace storage, identity, registry, or path behavior.
+- Workspace 识别和路径行为。
+- Workspace 状态解析。
+- 本地 workspace 注册表解析。
+- Workspace 心理模型的文档和 agent 指导。
+- 后续 workspace slices 应在此契约之上构建，而不是重新定义 workspace 存储、身份、注册表或路径行为。

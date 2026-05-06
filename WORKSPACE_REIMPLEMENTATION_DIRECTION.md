@@ -1,70 +1,70 @@
-# Workspace Reimplementation Direction
+# 工作区重构方向
 
-Date: 2026-04-30
+日期：2026-04-30
 
-Fresh-agent entry point: read `WORKSPACE_REIMPLEMENTATION_START_HERE.md` first, then return to this document for the full product direction.
+新鲜 agent 入口点：首先阅读 `WORKSPACE_REIMPLEMENTATION_START_HERE.md`，然后返回本文档获取完整的产品方向。
 
-This document captures the intended direction for reimplementing OpenSpec workspace support from scratch, based on what we learned from the workspace POC.
+本文档记录了我们从工作区 POC 中学到的内容，用于从零开始重新实现 OpenSpec 工作区支持的方向。
 
-The reimplementation should be ordered around the path a real user takes through OpenSpec:
-
-```text
-create workspace
-  -> add repos
-  -> open workspace
-  -> explore across repos
-  -> create proposal
-  -> apply one repo slice
-  -> verify
-  -> archive
-```
-
-The goal is not to rebuild every POC mechanism. The goal is to get one user-facing capability working at a time, in the same order a user would naturally create, implement, verify, and archive a change.
-
-## North Star
-
-A user should think:
+重新实现应该围绕真实用户通过 OpenSpec 的路径排序：
 
 ```text
-I have a multi-repo product goal.
-I create an OpenSpec workspace.
-I open it with my agent.
-The agent can see the registered repos.
-We explore until the scope is clear.
-Then we create a proposal.
-Then we implement one repo slice at a time.
+创建工作区
+  -> 添加仓库
+  -> 打开工作区
+  -> 跨仓库探索
+  -> 创建提案
+  -> 应用一个仓库切片
+  -> 验证
+  -> 归档
 ```
 
-They should not think:
+目标不是重建每个 POC 机制。目标是让用户面对的能力一次一个，按用户自然创建、实现、验证和归档变更的相同顺序。
+
+## 北极星
+
+用户应该这样想：
 
 ```text
-I need to create a change so repos become visible.
-I need to materialize repo-local artifacts.
-I need to understand workspace overlays.
-I need to manage target metadata separately from proposal files.
+我有一个多仓库产品目标。
+我创建一个 OpenSpec 工作区。
+我用我的 agent 打开它。
+agent 可以看到已注册的仓库。
+我们探索直到范围清晰。
+然后我们创建一个提案。
+然后我们一次实现一个仓库切片。
 ```
 
-The core product rule is:
+而不应该这样想：
 
 ```text
-Repository visibility is not change commitment.
+我需要创建一个变更以便仓库变得可见。
+我需要将仓库本地的 artifact 具体化。
+我需要理解工作区覆盖层。
+我需要将目标元数据与提案文件分开管理。
 ```
 
-Registered repos are the workspace working set. Creating a change is a planning commitment. Applying a change is an implementation workflow.
-
-## Build Order
-
-### 1. Workspace Creation
-
-First make workspace creation boring and solid.
-
-User goal:
+核心产品规则是：
 
 ```text
-Create a place where cross-repo planning lives.
+仓库可见性不是变更承诺。
 ```
 
-Expected surface:
+已注册的仓库是工作区的工作集。创建变更是计划承诺。应用变更是实现工作流。
+
+## 构建顺序
+
+### 1. 工作区创建
+
+首先让工作区创建变得平凡而坚实。
+
+用户目标：
+
+```text
+创建一个存放跨仓库规划的地方。
+```
+
+预期表面：
 
 ```bash
 openspec workspace create my-workspace
@@ -72,7 +72,7 @@ openspec workspace add-repo openspec /path/to/openspec
 openspec workspace add-repo landing /path/to/openspec-landing
 ```
 
-Expected outcome:
+预期结果：
 
 ```text
 workspace/
@@ -81,34 +81,34 @@ workspace/
   .openspec-workspace/
 ```
 
-Product decisions:
+产品决策：
 
-- Use `.openspec-workspace/`, not `.openspec/`, for workspace metadata.
-- Keep `changes/` visible at the workspace root.
-- Treat registered repos as the workspace working set.
-- Make `doctor` show human-readable repo names and resolved paths.
+- 使用 `.openspec-workspace/`，而不是 `.openspec/`，用于工作区元数据。
+- 将 `changes/` 保持在工作区根目录可见。
+- 将已注册的仓库视为工作区工作集。
+- 让 `doctor` 显示人类可读的仓库名称和解析后的路径。
 
-Defer:
+推迟：
 
-- Branches.
-- Worktrees.
-- Apply.
-- Archive.
-- Complex target lifecycle.
+- 分支。
+- 工作树。
+- 应用。
+- 归档。
+- 复杂的目标生命周期。
 
-Done when a user can create a workspace, register repos, and run `doctor` to see exactly what OpenSpec knows.
+完成标准：用户可以创建工作区、注册仓库，并运行 `doctor` 查看 OpenSpec 确切知道的内容。
 
-### 2. Workspace Open
+### 2. 工作区打开
 
-Next make the workspace openable in the way users expect.
+接下来让工作区以用户期望的方式打开。
 
-User goal:
+用户目标：
 
 ```text
-Open this multi-repo working set with my coding agent.
+用我的编码 agent 打开这个多仓库工作集。
 ```
 
-Expected surface:
+预期表面：
 
 ```bash
 openspec workspace open
@@ -116,14 +116,14 @@ openspec workspace open --agent codex
 openspec workspace open --agent github-copilot
 ```
 
-Product behavior:
+产品行为：
 
-- `workspace open` opens the coordination workspace plus registered repos.
-- Repo visibility is default.
-- Change selection is optional focus, not the mechanism for repo access.
-- `--agent` should be a one-session override by default. Persisting the preferred agent should require an explicit preference-setting action.
+- `workspace open` 打开协调工作区以及已注册的仓库。
+- 仓库可见性是默认的。
+- 变更选择是可选的焦点，不是仓库访问的机制。
+- `--agent` 默认为一次会话覆盖。保存首选 agent 需要明确的偏好设置操作。
 
-For GitHub Copilot, generate or open a `.code-workspace` file with:
+对于 GitHub Copilot，生成或打开一个 `.code-workspace` 文件，包含：
 
 ```text
 workspace root
@@ -131,73 +131,73 @@ registered repo A
 registered repo B
 ```
 
-For Claude and Codex, attach the registered repo directories through the agent's supported mechanism.
+对于 Claude 和 Codex，通过 agent 支持的机制附加已注册的仓库目录。
 
-Defer:
+推迟：
 
-- `workspace open --change`.
-- In-session upgrade flows.
-- Per-change attachment restrictions.
+- `workspace open --change`。
+- 会话内升级流程。
+- 每变更附件限制。
 
-Done when opening a workspace gives the agent visibility into the coordination root and all registered repos.
+完成标准：打开工作区让 agent 可以看到协调根目录和所有已注册的仓库。
 
-### 3. Agent Guidance And Explore
+### 3. Agent 引导和探索
 
-Then make exploration work.
+然后让探索工作。
 
-User goal:
-
-```text
-Tell the agent a rough product goal and have it inspect the repos before creating a proposal.
-```
-
-Expected user prompt:
+用户目标：
 
 ```text
-Explore how we should make the OpenSpec docs available on the landing page.
-Look across the registered repos, but do not implement yet.
+告诉 agent 一个粗略的产品目标，让它在创建提案之前检查仓库。
 ```
 
-Agent behavior:
-
-- Understand it is in workspace mode.
-- Inspect registered repos.
-- Explain likely affected repos.
-- Ask for clarification only when needed.
-- Avoid implementation edits during explore.
-
-Build:
-
-- Workspace-level `AGENTS.md` guidance.
-- Normal OpenSpec skills and commands in workspace sessions.
-- Workspace-specific guidance layered on top of normal `/explore`, not replacing it.
-
-Defer:
-
-- Proposal artifact generation.
-- Target confirmation commands.
-- Apply context providers.
-
-Done when a user can open a workspace and run a useful cross-repo exploration without creating a dummy change.
-
-### 4. Proposal Creation
-
-Only after explore works, build proposal creation.
-
-User goal:
+预期的用户提示：
 
 ```text
-Now that we understand the scope, capture the plan.
+探索我们应该如何让 OpenSpec 文档在落地页上可用。
+跨已注册的仓库探索，但先不实现。
 ```
 
-Expected user prompt:
+Agent 行为：
+
+- 理解它处于工作区模式。
+- 检查已注册的仓库。
+- 解释可能受影响的仓库。
+- 仅在需要时才要求澄清。
+- 在探索期间避免实现编辑。
+
+构建：
+
+- 工作区级 `AGENTS.md` 指导。
+- 工作区会话中的正常 OpenSpec 技能和命令。
+- 在正常 `/explore` 之上分层的工作区特定指导，而不是替换它。
+
+推迟：
+
+- 提案 artifact 生成。
+- 目标确认命令。
+- 应用上下文提供器。
+
+完成标准：用户可以打开工作区并运行有用的跨仓库探索，而不创建虚拟变更。
+
+### 4. 提案创建
+
+只有在探索工作之后，才构建提案创建。
+
+用户目标：
 
 ```text
-Create a proposal for this change.
-Target the repos that are actually affected.
+既然我们了解了范围，就捕获计划。
 ```
 
-Preferred artifact shape:
+预期用户提示：
+
+```text
+为此变更创建一个提案。
+针对实际受影响的仓库。
+```
+
+首选 artifact 形状：
 
 ```text
 changes/integrate-docs/
@@ -211,102 +211,102 @@ changes/integrate-docs/
       docs-routing/spec.md
 ```
 
-Key workflow rule:
+关键工作流规则：
 
 ```text
-/explore may leave targets unknown.
-/propose may discover targets.
-/propose must confirm targets before saying ready for apply.
+/explore 可能让目标未知.
+/propose 可能发现目标
+/propose 必须在说准备好应用之前确认目标
 ```
 
-Targets should be represented by the proposal artifacts themselves where possible. If there is `specs/landing/...`, then `landing` is in scope. Avoid a separate required `targets: [...]` metadata list as the active source of truth.
+目标应该尽可能由提案 artifact 本身表示。如果有 `specs/landing/...`，那么 `landing` 在范围内。避免单独的必需 `targets: [...]` 元数据列表作为活动真相来源。
 
-Defer:
+推迟：
 
-- Repo-local materialization.
-- Worktree selection.
-- Multi-repo implementation.
-- Archive.
+- 仓库本地具体化。
+- 工作树选择。
+- 多仓库实现。
+- 归档。
 
-Done when a user can explore, then create a workspace proposal with repo-scoped specs and tasks.
+完成标准：用户可以探索，然后创建具有仓库范围 specs 和 tasks 的工作区提案。
 
-### 5. Status
+### 5. 状态
 
-Before implementation, make status excellent.
+在实现之前，让状态变得出色。
 
-User goal:
+用户目标：
 
 ```text
-Where are we, what repos are involved, and is this ready to implement?
+我们在哪里，涉及哪些仓库，这准备好实现了吗？
 ```
 
-Expected surface:
+预期表面：
 
 ```bash
 openspec status
 openspec status --change integrate-docs
 ```
 
-Human output should answer:
+人类输出应回答：
 
 ```text
-Change: integrate-docs
-Scope: openspec, landing
-Proposal: present
-Design: present
-Tasks: present
-Ready for apply: yes/no
+变更：integrate-docs
+范围：openspec, landing
+提案：存在
+设计：存在
+任务：存在
+准备好应用：是否
 ```
 
-Status should also catch structural mistakes:
+状态还应捕获结构性错误：
 
-- Unknown repo folder under `specs/`.
-- Missing tasks.
-- No confirmed affected repo.
-- Registered repo path missing.
+- `specs/` 下未知的仓库文件夹。
+- 缺失的任务。
+- 没有确认的受影响仓库。
+- 已注册的仓库路径缺失。
 
-Done when the agent and user can trust status before applying.
+完成标准：agent 和用户可以在应用之前信任状态。
 
-### 6. Apply One Repo Slice
+### 6. 应用一个仓库切片
 
-Only now build `/apply`.
+现在才构建 `/apply`。
 
-User goal:
+用户目标：
 
 ```text
-Implement the planned slice for one repo.
+实现一个仓库的计划切片。
 ```
 
-Expected user prompt:
+预期用户提示：
 
 ```text
 /apply integrate-docs for landing
 ```
 
-Product contract:
+产品合约：
 
 ```text
-/apply means implement.
+/apply 意味着实现。
 ```
 
-It does not mean:
+它不意味着：
 
 ```text
-copy planning files
-materialize repo-local OpenSpec state
-create the proposal files for the first time
+复制规划文件
+将仓库本地的 OpenSpec 状态具体化
+首次创建提案文件
 ```
 
-Agent behavior:
+Agent 行为：
 
-1. Ask OpenSpec for apply context.
-2. Read proposal, design, tasks, and relevant specs.
-3. Confirm the target repo checkout.
-4. Edit only that repo.
-5. Update workspace tasks.
-6. Run relevant checks.
+1. 向 OpenSpec 请求应用上下文。
+2. 阅读提案、设计、任务和相关 specs。
+3. 确认目标仓库 checkout。
+4. 仅编辑该仓库。
+5. 更新工作区任务。
+6. 运行相关检查。
 
-This likely wants a normalized context command internally, but that is supporting machinery:
+这可能需要在内部使用规范化上下文命令，但那是支持机制：
 
 ```json
 {
@@ -327,130 +327,130 @@ This likely wants a normalized context command internally, but that is supportin
 }
 ```
 
-Defer:
+推迟：
 
-- Applying multiple repos at once.
-- Automatic branch creation.
-- Worktree management.
-- Repo-local OpenSpec mirroring.
+- 一次应用多个仓库。
+- 自动分支创建。
+- 工作树管理。
+- 仓库本地 OpenSpec 镜像。
 
-Done when one repo slice can be implemented from the central workspace plan.
+完成标准：可以从中央工作区计划实现一个仓库切片。
 
-### 7. Verify
+### 7. 验证
 
-Then build verification.
+然后构建验证。
 
-User goal:
+用户目标：
 
 ```text
-Check whether the implemented repo slice satisfies the plan.
+检查已实现的仓库切片是否满足计划。
 ```
 
-Expected prompt:
+预期提示：
 
 ```text
 /verify integrate-docs for landing
 ```
 
-Behavior:
+行为：
 
-- Read the same normalized context as `/apply`.
-- Inspect the implementation checkout.
-- Check tasks and specs for that repo.
-- Run repo validation.
-- Report gaps clearly.
+- 读取与 `/apply` 相同的规范化上下文。
+- 检查实现 checkout。
+- 检查该仓库的任务和 specs。
+- 运行仓库验证。
+- 报告差距清晰。
 
-Default behavior should verify one repo slice. Whole-workspace verification can come later.
+默认行为应验证一个仓库切片。全工作区验证可以稍后出现。
 
-Done when a user can verify one implemented repo slice against the central workspace plan.
+完成标准：用户可以针对中央工作区计划验证一个已实现的仓库切片。
 
-### 8. Archive
+### 8. 归档
 
-Archive comes last in the first complete loop.
+在第一个完整循环中最后是归档。
 
-User goal:
+用户目标：
 
 ```text
-The change is done. Move it out of active planning.
+变更完成了。将其从活动规划中移出。
 ```
 
-Expected prompt:
+预期提示：
 
 ```text
 /archive integrate-docs
 ```
 
-Behavior:
+行为：
 
-- Require all targeted repo slices to be complete or explicitly accepted.
-- Archive the workspace change.
-- Do not require repo-local planning copies unless OpenSpec later decides that repo-local archival matters.
+- 要求所有目标仓库切片完成或明确接受。
+- 归档工作区变更。
+- 不要求仓库本地的规划副本，除非 OpenSpec 稍后决定仓库本地归档重要。
 
-Done when a user can complete the full lifecycle:
+完成标准：用户可以完成完整生命周期：
 
 ```text
-workspace create
-  -> open
-  -> explore
-  -> propose
-  -> apply repo A
-  -> apply repo B
-  -> verify
-  -> archive
+创建工作区
+  -> 打开
+  -> 探索
+  -> 提案
+  -> 应用仓库 A
+  -> 应用仓库 B
+  -> 验证
+  -> 归档
 ```
 
-## Implementation Discipline
+## 实现纪律
 
-Build only the next user-visible step.
+仅构建下一个用户可见的步骤。
 
-The sequence should stay grounded in these questions:
+序列应保持基于这些问题的接地：
 
 ```text
-1. Can I create the workspace?
-2. Can I see my repos?
-3. Can my agent explore them?
-4. Can we capture a proposal?
-5. Can status tell us if it is ready?
-6. Can the agent implement one repo slice?
-7. Can we verify it?
-8. Can we archive it?
+1. 我可以创建工作区吗？
+2. 我可以看到我的仓库吗？
+3. 我的 agent 可以探索它们吗？
+4. 我们可以捕获提案吗？
+5. 状态可以告诉我们是否准备好吗？
+6. agent 可以实现一个仓库切片吗？
+7. 我们可以验证它吗？
+8. 我们可以归档它吗？
 ```
 
-Avoid starting with internal abstractions unless they are required for the next user-visible capability.
+除非下一个用户可见能力需要，否则不要从内部抽象开始。
 
-Do not start with:
+不要从以下开始：
 
-- Target metadata machinery.
-- Materialization.
-- Adapter abstractions.
-- Branch orchestration.
-- Worktree orchestration.
-- Multi-repo apply.
+- 目标元数据机制。
+- 具体化。
+- 适配器抽象。
+- 分支编排。
+- 工作树编排。
+- 多仓库应用。
 
-Those may matter later, but they should not define the first reimplementation path.
+这些以后可能很重要，但它们不应该定义第一个重新实现路径。
 
-## Product Shape
+## 产品形态
 
-The workspace should feel like OpenSpec's normal workflow stretched across multiple repos, not a second product with its own lifecycle.
+工作区应该感觉像 OpenSpec 正常工作流跨多个仓库的延伸，而不是第二个具有自己生命周期的产品。
 
-The durable product model is:
+持久性产品模型是：
 
 ```text
-workspace = central planning source of truth
-registered repos = visible working set
-proposal = scoped planning commitment
-repo target = one affected repo in the plan
-branch/worktree = implementation checkout
-/apply = implement one selected repo slice
+workspace = 中央规划真相来源
+registered repos = 可见工作集
+proposal = 范围规划承诺
+repo target = 计划中一个受影响的仓库
+branch/worktree = 实现 checkout
+/apply = 实现一个选定的仓库切片
 ```
 
-Keep the user journey simple:
+保持用户旅程简单：
 
 ```text
-Open the workspace.
-Ask the agent to explore.
-Create the proposal when scope is clear.
-Implement one repo slice at a time.
-Verify.
-Archive.
+打开工作区。
+让 agent 探索。
+当范围清晰时创建提案。
+一次实现一个仓库切片。
+验证。
+归档。
 ```

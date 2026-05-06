@@ -1,47 +1,47 @@
-## Why
+## 为什么
 
-Once repos are visible and the agent has workspace context, the user should be able to plan a cross-repo change without immediately materializing repo-local artifacts.
+一旦 repos 可见且 agent 有 workspace 上下文，用户应该能够规划跨 repo 变更，而无需立即物化 repo 本地工件。
 
-The user goal is:
+用户目标是：
 
 ```text
-Explore the product goal across repos.
-Decide the scope.
-Create one workspace-level proposal that identifies the repo slices.
+跨 repos 探索产品目标。
+决定范围。
+创建一个识别 repo slices 的 workspace 级提案。
 ```
 
-Planning should be the commitment point. Repo visibility alone should remain lightweight.
+规划应该是承诺点。Repo 可见性本身应该保持轻量。
 
-## What Changes
+## 什么变更
 
-Add workspace-level change planning:
+添加 workspace 级变更规划：
 
-- create a workspace change from the coordination root
-- capture the product goal once
-- identify target repos by registered alias
-- let the agent explore before committing to implementation slices
-- keep the workspace as the planning source of truth
+- 从协调根创建 workspace 变更
+- 一次性捕获产品目标
+- 按注册别名识别目标 repos
+- 让 agent 在提交实现 slices 之前进行探索
+- 将 workspace 保持为规划的真实来源
 
-This slice should avoid rebuilding the POC's materialization-first behavior. Repo-local artifacts should not be created merely because a workspace change exists.
+这个 slice 应该避免重建 POC 的物化优先行为。不应仅仅因为 workspace 变更存在就创建 repo 本地工件。
 
-Planning dependency:
+规划依赖：
 
-- Depends on `workspace-open-agent-context`.
+- 取决于 `workspace-open-agent-context`。
 
-## Capabilities
+## 能力
 
-### New Capabilities
+### 新能力
 
-- `workspace-change-planning`: Creates and manages workspace-level proposals for cross-repo goals.
+- `workspace-change-planning`：为跨 repo 目标创建和管理 workspace 级提案。
 
-### Modified Capabilities
+### 修改的能力
 
-- `change-creation`: Adds workspace-aware change creation semantics and target repo selection.
-- `openspec-conventions`: Defines the relationship between workspace-level planning and repo-local implementation work.
+- `change-creation`：添加 workspace 感知的变更创建语义和目标 repo 选择。
+- `openspec-conventions`：定义 workspace 级规划和 repo 本地实现工作之间的关系。
 
-## Impact
+## 影响
 
-- Workspace change creation.
-- Target repo metadata and validation.
-- Agent instructions for proposing cross-repo changes.
-- Tests that registered repos are visible before change creation and that creating a change does not imply repo-local materialization.
+- Workspace 变更创建。
+- 目标 repo 元数据和验证。
+- 用于提议跨 repo 变更的 agent 指令。
+- 测试在变更创建之前 repos 是可见的，以及创建变更不意味着 repo 本地物化。

@@ -1,122 +1,122 @@
-# config-loading Specification
+# config-loading 规范
 
-## Purpose
-Define how `openspec/config.yaml` is discovered, parsed, validated, and exposed to callers with safe fallbacks.
+## 目的
+定义 `openspec/config.yaml` 如何被发现、解析、验证以及向调用者暴露，并带有安全的回退。
 
-## Requirements
-### Requirement: Load project config from openspec/config.yaml
+## 需求
 
-The system SHALL read and parse the project configuration file located at `openspec/config.yaml` relative to the project root.
+### 需求：从 openspec/config.yaml 加载项目配置
 
-#### Scenario: Valid config file exists
-- **WHEN** `openspec/config.yaml` exists with valid YAML content
-- **THEN** system parses the file and returns a ProjectConfig object
+系统应读取并解析位于项目根目录下 `openspec/config.yaml` 的项目配置文件。
 
-#### Scenario: Config file does not exist
-- **WHEN** `openspec/config.yaml` does not exist
-- **THEN** system returns null without error
+#### 场景：有效的配置文件存在
+- **当** `openspec/config.yaml` 存在且包含有效的 YAML 内容时
+- **那么** 系统解析文件并返回 ProjectConfig 对象
 
-#### Scenario: Config file has invalid YAML syntax
-- **WHEN** `openspec/config.yaml` contains malformed YAML
-- **THEN** system logs a warning message and returns null
+#### 场景：配置文件不存在
+- **当** `openspec/config.yaml` 不存在时
+- **那么** 系统返回 null 而不报错
 
-#### Scenario: Config file has valid YAML but invalid schema
-- **WHEN** `openspec/config.yaml` contains valid YAML that fails Zod schema validation
-- **THEN** system logs a warning message with validation details and returns null
+#### 场景：配置文件有无效的 YAML 语法
+- **当** `openspec/config.yaml` 包含格式错误的 YAML 时
+- **那么** 系统记录警告消息并返回 null
 
-### Requirement: Support .yml file extension alias
+#### 场景：配置文件有有效的 YAML 但 schema 无效
+- **当** `openspec/config.yaml` 包含通过 Zod schema 验证失败的有效 YAML 时
+- **那么** 系统记录带有验证详情的警告消息并返回 null
 
-The system SHALL accept both `.yaml` and `.yml` file extensions for the config file.
+### 需求：支持 .yml 文件扩展名别名
 
-#### Scenario: Config file uses .yml extension
-- **WHEN** `openspec/config.yml` exists and `openspec/config.yaml` does not exist
-- **THEN** system reads from `openspec/config.yml`
+系统应接受配置文件的这 `.yaml` 和 `.yml` 文件扩展名。
 
-#### Scenario: Both .yaml and .yml exist
-- **WHEN** both `openspec/config.yaml` and `openspec/config.yml` exist
-- **THEN** system prefers `openspec/config.yaml`
+#### 场景：配置文件使用 .yml 扩展名
+- **当** `openspec/config.yml` 存在且 `openspec/config.yaml` 不存在时
+- **那么** 系统从 `openspec/config.yml` 读取
 
-### Requirement: Use resilient field-by-field parsing
+#### 场景：.yaml 和 .yml 都存在
+- **当** `openspec/config.yaml` 和 `openspec/config.yml` 都存在时
+- **那么** 系统优先使用 `openspec/config.yaml`
 
-The system SHALL parse each config field independently, collecting valid fields and warning about invalid ones without rejecting the entire config.
+### 需求：使用弹性逐字段解析
 
-#### Scenario: Schema field is valid
-- **WHEN** config contains `schema: "spec-driven"`
-- **THEN** schema field is included in returned config
+系统应独立解析每个配置字段，收集有效字段并警告无效字段，不拒绝整个配置。
 
-#### Scenario: Schema field is missing
-- **WHEN** config lacks the `schema` field
-- **THEN** no warning is logged (field is optional at parse level)
+#### 场景：Schema 字段有效
+- **当** 配置包含 `schema: "spec-driven"` 时
+- **那么** schema 字段包含在返回的配置中
 
-#### Scenario: Schema field is empty string
-- **WHEN** config contains `schema: ""`
-- **THEN** warning is logged and schema field is not included in returned config
+#### 场景：Schema 字段缺失
+- **当** 配置缺少 `schema` 字段时
+- **那么** 不记录警告（字段在解析级别是可选的）
 
-#### Scenario: Schema field is invalid type
-- **WHEN** config contains `schema: 123` (number instead of string)
-- **THEN** warning is logged and schema field is not included in returned config
+#### 场景：Schema 字段是空字符串
+- **当** 配置包含 `schema: ""` 时
+- **那么** 记录警告且 schema 字段不包含在返回的配置中
 
-#### Scenario: Context field is valid
-- **WHEN** config contains `context: "Tech stack: TypeScript"`
-- **THEN** context field is included in returned config
+#### 场景：Schema 字段类型无效
+- **当** 配置包含 `schema: 123`（数字而不是字符串）时
+- **那么** 记录警告且 schema 字段不包含在返回的配置中
 
-#### Scenario: Context field is invalid type
-- **WHEN** config contains `context: 123` (number instead of string)
-- **THEN** warning is logged and context field is not included in returned config
+#### 场景：Context 字段有效
+- **当** 配置包含 `context: "Tech stack: TypeScript"` 时
+- **那么** context 字段包含在返回的配置中
 
-#### Scenario: Rules field has valid structure
-- **WHEN** config contains `rules: { proposal: ["Rule 1"], specs: ["Rule 2"] }`
-- **THEN** rules field is included in returned config with valid rules
+#### 场景：Context 字段类型无效
+- **当** 配置包含 `context: 123`（数字而不是字符串）时
+- **那么** 记录警告且 context 字段不包含在返回的配置中
 
-#### Scenario: Rules field has non-array value for artifact
-- **WHEN** config contains `rules: { proposal: "not an array", specs: ["Valid"] }`
-- **THEN** warning is logged for proposal, but specs rules are still included in returned config
+#### 场景：Rules 字段结构有效
+- **当** 配置包含 `rules: { proposal: ["Rule 1"], specs: ["Rule 2"] }` 时
+- **那么** rules 字段包含在返回的配置中，且带有有效规则
 
-#### Scenario: Rules array contains non-string elements
-- **WHEN** config contains `rules: { proposal: ["Valid rule", 123, ""] }`
-- **THEN** only "Valid rule" is included, warning logged about invalid elements
+#### 场景：Rules 字段产物值为非数组
+- **当** 配置包含 `rules: { proposal: "not an array", specs: ["Valid"] }` 时
+- **那么** 记录 proposal 的警告，但 specs 规则仍然包含在返回的配置中
 
-#### Scenario: Mix of valid and invalid fields
-- **WHEN** config contains valid schema, invalid context type, valid rules
-- **THEN** config is returned with schema and rules fields, warning logged about context
+#### 场景：Rules 数组包含非字符串元素
+- **当** 配置包含 `rules: { proposal: ["Valid rule", 123, ""] }` 时
+- **那么** 仅包含 "Valid rule"，记录关于无效元素的警告
 
-### Requirement: Enforce context size limit
+#### 场景：有效和无效字段混合
+- **当** 配置包含有效的 schema、无效的 context 类型、有效的 rules 时
+- **那么** 返回带有 schema 和 rules 字段的配置，记录关于 context 的警告
 
-The system SHALL reject context fields exceeding 50KB and log a warning.
+### 需求：强制 context 大小限制
 
-#### Scenario: Context within size limit
-- **WHEN** config contains context of 1KB
-- **THEN** context is included in returned config
+系统应拒绝超过 50KB 的 context 字段并记录警告。
 
-#### Scenario: Context at size limit
-- **WHEN** config contains context of exactly 50KB
-- **THEN** context is included in returned config
+#### 场景：Context 在大小限制内
+- **当** 配置包含 1KB 的 context 时
+- **那么** context 包含在返回的配置中
 
-#### Scenario: Context exceeds size limit
-- **WHEN** config contains context of 51KB
-- **THEN** warning is logged with size and limit, context field is not included in returned config
+#### 场景：Context 达到大小限制
+- **当** 配置包含恰好 50KB 的 context 时
+- **那么** context 包含在返回的配置中
 
-### Requirement: Defer artifact ID validation to instruction loading
+#### 场景：Context 超过大小限制
+- **当** 配置包含 51KB 的 context 时
+- **那么** 记录带有大小和限制的警告，context 字段不包含在返回的配置中
 
-The system SHALL NOT validate artifact IDs in rules during config load time. Validation happens during instruction loading when schema is known.
+### 需求：在指令加载时延迟产物 ID 验证
 
-#### Scenario: Config with rules is loaded
-- **WHEN** config contains `rules: { unknownartifact: [...] }`
-- **THEN** config is loaded successfully without validation errors
+系统不应在配置加载时验证规则中的产物 ID。验证在指令加载期间发生，当 schema 已知时。
 
-#### Scenario: Validation happens at instruction load time
-- **WHEN** instructions are loaded for any artifact and config has unknown artifact IDs in rules
-- **THEN** warnings are emitted about unknown artifact IDs (see rules-injection spec for details)
+#### 场景：带规则的配置被加载
+- **当** 配置包含 `rules: { unknownartifact: [...] }` 时
+- **那么** 配置成功加载，没有验证错误
 
-### Requirement: Gracefully handle config errors without halting
+#### 场景：验证在指令加载时发生
+- **当** 为任何产物加载指令且配置在规则中有未知产物 ID 时
+- **那么** 发出关于未知产物 ID 的警告（详见 rules-injection 规范）
 
-The system SHALL continue operation with default values when config loading or parsing fails.
+### 需求：优雅处理配置错误而不停止
 
-#### Scenario: Config parse failure during command execution
-- **WHEN** config file has syntax errors and user runs `openspec new change`
-- **THEN** command executes using default schema "spec-driven"
+当配置加载或解析失败时，系统应使用默认值继续操作。
 
-#### Scenario: Warning is visible to user
-- **WHEN** config loading fails
-- **THEN** system outputs warning message to stderr with details about the failure
+#### 场景：命令执行期间配置解析失败
+- **当** 配置文件有语法错误且用户运行 `openspec new change` 时
+- **那么** 命令使用默认 schema "spec-driven" 执行
 
+#### 场景：警告对用户可见
+- **当** 配置加载失败时
+- **那么** 系统向 stderr 输出带有失败详情的警告消息

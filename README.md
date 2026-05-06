@@ -1,3 +1,5 @@
+# OpenSpec
+
 <p align="center">
   <a href="https://github.com/Fission-AI/OpenSpec">
     <picture>
@@ -15,7 +17,7 @@
 </p>
 
 <details>
-<summary><strong>The most loved spec framework.</strong></summary>
+<summary><strong>最受喜爱的规格框架。</strong></summary>
 
 [![Stars](https://img.shields.io/github/stars/Fission-AI/OpenSpec?style=flat-square&label=Stars)](https://github.com/Fission-AI/OpenSpec/stargazers)
 [![Downloads](https://img.shields.io/npm/dm/@fission-ai/openspec?style=flat-square&label=Downloads/mo)](https://www.npmjs.com/package/@fission-ai/openspec)
@@ -23,177 +25,177 @@
 
 </details>
 <p></p>
-Our philosophy:
+我们的理念：
 
 ```text
-→ fluid not rigid
-→ iterative not waterfall
-→ easy not complex
-→ built for brownfield not just greenfield
-→ scalable from personal projects to enterprises
+→ 流畅而非僵化
+→ 迭代而非瀑布
+→ 简单而非复杂
+→ 为 brownfield 而非仅 greenfield 构建
+→ 从个人项目到企业均可扩展
 ```
 
 > [!TIP]
-> **New workflow now available!** We've rebuilt OpenSpec with a new artifact-guided workflow.
+> **新工作流已上线！** 我们用全新的 artifact 引导工作流重建了 OpenSpec。
 >
-> Run `/opsx:propose "your idea"` to get started. → [Learn more here](docs/opsx.md)
+> 运行 `/opsx:propose "你的想法"` 开始使用。 → [了解更多](docs/opsx.md)
 
 <p align="center">
-  Follow <a href="https://x.com/0xTab">@0xTab on X</a> for updates · Join the <a href="https://discord.gg/YctCnvvshC">OpenSpec Discord</a> for help and questions.
+  在 <a href="https://x.com/0xTab">X 上关注 @0xTab</a> 获取更新 · 加入 <a href="https://discord.gg/YctCnvvshC">OpenSpec Discord</a> 寻求帮助和问题解答。
 </p>
 
-<!-- TODO: Add GIF demo of /opsx:propose → /opsx:archive workflow -->
+<!-- TODO: 添加 /opsx:propose → /opsx:archive 工作流的 GIF 演示 -->
 
-## See it in action
+## 看看它的实际效果
 
 ```text
-You: /opsx:propose add-dark-mode
-AI:  Created openspec/changes/add-dark-mode/
-     ✓ proposal.md — why we're doing this, what's changing
-     ✓ specs/       — requirements and scenarios
-     ✓ design.md    — technical approach
-     ✓ tasks.md     — implementation checklist
-     Ready for implementation!
+你: /opsx:propose add-dark-mode
+AI:  已创建 openspec/changes/add-dark-mode/
+     ✓ proposal.md — 我们为什么要这样做，发生了什么变化
+     ✓ specs/       — 需求和场景
+     ✓ design.md    — 技术方案
+     ✓ tasks.md     — 实现检查清单
+     准备好实现了！
 
-You: /opsx:apply
-AI:  Implementing tasks...
-     ✓ 1.1 Add theme context provider
-     ✓ 1.2 Create toggle component
-     ✓ 2.1 Add CSS variables
-     ✓ 2.2 Wire up localStorage
-     All tasks complete!
+你: /opsx:apply
+AI:  正在实现任务...
+     ✓ 1.1 添加主题上下文提供器
+     ✓ 1.2 创建切换组件
+     ✓ 2.1 添加 CSS 变量
+     ✓ 2.2 连接 localStorage
+     所有任务完成！
 
-You: /opsx:archive
-AI:  Archived to openspec/changes/archive/2025-01-23-add-dark-mode/
-     Specs updated. Ready for the next feature.
+你: /opsx:archive
+AI:  已归档到 openspec/changes/archive/2025-01-23-add-dark-mode/
+     规格已更新。准备好下一个功能。
 ```
 
 <details>
-<summary><strong>OpenSpec Dashboard</strong></summary>
+<summary><strong>OpenSpec 仪表盘</strong></summary>
 
 <p align="center">
-  <img src="assets/openspec_dashboard.png" alt="OpenSpec dashboard preview" width="90%">
+  <img src="assets/openspec_dashboard.png" alt="OpenSpec 仪表盘预览" width="90%">
 </p>
 
 </details>
 
-## Quick Start
+## 快速开始
 
-**Requires Node.js 20.19.0 or higher.**
+**需要 Node.js 20.19.0 或更高版本。**
 
-Install OpenSpec globally:
+全局安装 OpenSpec：
 
 ```bash
 npm install -g @fission-ai/openspec@latest
 ```
 
-Then navigate to your project directory and initialize:
+然后导航到你的项目目录并初始化：
 
 ```bash
 cd your-project
 openspec init
 ```
 
-Now tell your AI: `/opsx:propose <what-you-want-to-build>`
+现在告诉你的 AI：`/opsx:propose <你想构建的内容>`
 
-If you want the expanded workflow (`/opsx:new`, `/opsx:continue`, `/opsx:ff`, `/opsx:verify`, `/opsx:bulk-archive`, `/opsx:onboard`), select it with `openspec config profile` and apply with `openspec update`.
+如果你想要扩展工作流（`/opsx:new`、`/opsx:continue`、`/opsx:ff`、`/opsx:verify`、`/opsx:bulk-archive`、`/opsx:onboard`），使用 `openspec config profile` 选择它并使用 `openspec update` 应用。
 
 > [!NOTE]
-> Not sure if your tool is supported? [View the full list](docs/supported-tools.md) – we support 25+ tools and growing.
+> 不确定你的工具是否受支持？[查看完整列表](docs/supported-tools.md) – 我们支持 25+ 工具并且还在增加。
 >
-> Also works with pnpm, yarn, bun, and nix. [See installation options](docs/installation.md).
+> 还支持 pnpm、yarn、bun 和 nix。[查看安装选项](docs/installation.md)。
 
-## Docs
+## 文档
 
-→ **[Getting Started](docs/getting-started.md)**: first steps<br>
-→ **[Workflows](docs/workflows.md)**: combos and patterns<br>
-→ **[Commands](docs/commands.md)**: slash commands & skills<br>
-→ **[CLI](docs/cli.md)**: terminal reference<br>
-→ **[Supported Tools](docs/supported-tools.md)**: tool integrations & install paths<br>
-→ **[Concepts](docs/concepts.md)**: how it all fits<br>
-→ **[Multi-Language](docs/multi-language.md)**: multi-language support<br>
-→ **[Customization](docs/customization.md)**: make it yours
+→ **[入门指南](docs/getting-started.md)**：第一步<br>
+→ **[工作流](docs/workflows.md)**：组合和模式<br>
+→ **[命令](docs/commands.md)**：斜杠命令和技能<br>
+→ **[CLI](docs/cli.md)**：终端参考<br>
+→ **[支持的工具](docs/supported-tools.md)**：工具集成和安装路径<br>
+→ **[概念](docs/concepts.md)**：一切如何运作<br>
+→ **[多语言](docs/multi-language.md)**：多语言支持<br>
+→ **[自定义](docs/customization.md)**：让它适合你
 
 
-## Why OpenSpec?
+## 为什么选择 OpenSpec？
 
-AI coding assistants are powerful but unpredictable when requirements live only in chat history. OpenSpec adds a lightweight spec layer so you agree on what to build before any code is written.
+AI 编码助手很强大，但当需求仅存在于聊天历史中时，它们是不可预测的。OpenSpec 添加了一个轻量级的规格层，让你在写任何代码之前就同意要构建什么。
 
-- **Agree before you build** — human and AI align on specs before code gets written
-- **Stay organized** — each change gets its own folder with proposal, specs, design, and tasks
-- **Work fluidly** — update any artifact anytime, no rigid phase gates
-- **Use your tools** — works with 20+ AI assistants via slash commands
+- **在构建之前达成共识** — 人类和 AI 在代码编写之前在规格上对齐
+- **保持井井有条** — 每个变更都有自己的文件夹，包含 proposal、specs、design 和 tasks
+- **流畅工作** — 随时更新任何 artifact，没有僵化的阶段门
+- **使用你的工具** — 通过斜杠命令与 20+ AI 助手配合工作
 
-### How we compare
+### 我们如何比较
 
-**vs. [Spec Kit](https://github.com/github/spec-kit)** (GitHub) — Thorough but heavyweight. Rigid phase gates, lots of Markdown, Python setup. OpenSpec is lighter and lets you iterate freely.
+**vs. [Spec Kit](https://github.com/github/spec-kit)** (GitHub) — 全面但笨重。僵化的阶段门、大量 Markdown、Python 设置。OpenSpec 更轻量，让你自由迭代。
 
-**vs. [Kiro](https://kiro.dev)** (AWS) — Powerful but you're locked into their IDE and limited to Claude models. OpenSpec works with the tools you already use.
+**vs. [Kiro](https://kiro.dev)** (AWS) — 强大，但你被锁定在其 IDE 中，仅限于 Claude 模型。OpenSpec 与你已经使用的工具配合工作。
 
-**vs. nothing** — AI coding without specs means vague prompts and unpredictable results. OpenSpec brings predictability without the ceremony.
+**vs. 什么都没有** — 没有规格的 AI 编码意味着模糊的提示和不可预测的结果。OpenSpec 带来可预测性而无需繁琐的仪式。
 
-## Updating OpenSpec
+## 更新 OpenSpec
 
-**Upgrade the package**
+**升级包**
 
 ```bash
 npm install -g @fission-ai/openspec@latest
 ```
 
-**Refresh agent instructions**
+**刷新 agent 指令**
 
-Run this inside each project to regenerate AI guidance and ensure the latest slash commands are active:
+在每个项目内运行此命令以重新生成 AI 指导并确保最新的斜杠命令处于活跃状态：
 
 ```bash
 openspec update
 ```
 
-## Usage Notes
+## 使用说明
 
-**Model selection**: OpenSpec works best with high-reasoning models. We recommend Opus 4.5 and GPT 5.2 for both planning and implementation.
+**模型选择**：OpenSpec 在高推理模型上效果最佳。我们建议将 Opus 4.5 和 GPT 5.2 用于规划和实现。
 
-**Context hygiene**: OpenSpec benefits from a clean context window. Clear your context before starting implementation and maintain good context hygiene throughout your session.
+**上下文卫生**：OpenSpec 从干净的上下文窗口中受益。在开始实现之前清除你的上下文，并在整个会话中保持良好的上下文卫生。
 
-## Contributing
+## 贡献
 
-**Small fixes** — Bug fixes, typo corrections, and minor improvements can be submitted directly as PRs.
+**小修复** — Bug 修复、拼写纠正和微小改进可以直接作为 PR 提交。
 
-**Larger changes** — For new features, significant refactors, or architectural changes, please submit an OpenSpec change proposal first so we can align on intent and goals before implementation begins.
+**更大的变更** — 对于新功能、重要重构或架构变更，请先提交 OpenSpec 变更提案，以便我们在开始实现之前对齐意图和目标。
 
-When writing proposals, keep the OpenSpec philosophy in mind: we serve a wide variety of users across different coding agents, models, and use cases. Changes should work well for everyone.
+编写提案时，牢记 OpenSpec 理念：我们为跨不同编码 agent、模型和用例的广泛用户群体服务。变更应该对每个人都有效。
 
-**AI-generated code is welcome** — as long as it's been tested and verified. PRs containing AI-generated code should mention the coding agent and model used (e.g., "Generated with Claude Code using claude-opus-4-5-20251101").
+**欢迎 AI 生成的代码** — 只要它经过测试和验证。包含 AI 生成代码的 PR 应提及所使用的编码 agent 和模型（例如"Generated with Claude Code using claude-opus-4-5-20251101"）。
 
-### Development
+### 开发
 
-- Install dependencies: `pnpm install`
-- Build: `pnpm run build`
-- Test: `pnpm test`
-- Develop CLI locally: `pnpm run dev` or `pnpm run dev:cli`
-- Conventional commits (one-line): `type(scope): subject`
+- 安装依赖：`pnpm install`
+- 构建：`pnpm run build`
+- 测试：`pnpm test`
+- 本地开发 CLI：`pnpm run dev` 或 `pnpm run dev:cli`
+- 常规提交（一行式）：`type(scope): subject`
 
-## Other
+## 其他
 
 <details>
-<summary><strong>Telemetry</strong></summary>
+<summary><strong>遥测</strong></summary>
 
-OpenSpec collects anonymous usage stats.
+OpenSpec 收集匿名使用统计。
 
-We collect only command names and version to understand usage patterns. No arguments, paths, content, or PII. Automatically disabled in CI.
+我们仅收集命令名称和版本以了解使用模式。不收集参数、路径、内容或 PII。在 CI 中自动禁用。
 
-**Opt-out:** `export OPENSPEC_TELEMETRY=0` or `export DO_NOT_TRACK=1`
+**选择退出：** `export OPENSPEC_TELEMETRY=0` 或 `export DO_NOT_TRACK=1`
 
 </details>
 
 <details>
-<summary><strong>Maintainers & Advisors</strong></summary>
+<summary><strong>维护者和顾问</strong></summary>
 
-See [MAINTAINERS.md](MAINTAINERS.md) for the list of core maintainers and advisors who help guide the project.
+请参阅 [MAINTAINERS.md](MAINTAINERS.md) 了解核心维护者和顾问的名单，他们帮助指导项目。
 
 </details>
 
 
 
-## License
+## 许可证
 
 MIT

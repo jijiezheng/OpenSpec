@@ -1,92 +1,92 @@
-# cli-change Specification
+# cli-change 规范
 
-## Purpose
-Define `openspec change` command behavior for showing, listing, and validating change proposals and deltas.
+## 目的
+定义 `openspec change` 命令的行为，用于显示、列出和验证变更提案和增量。
 
-## Requirements
-### Requirement: Change Command
+## 需求
 
-The system SHALL provide a `change` command with subcommands for displaying, listing, and validating change proposals.
+### 需求：Change 命令
 
-#### Scenario: Show change as JSON
+系统应提供 `change` 命令，包含用于显示、列出和验证变更提案的子命令。
 
-- **WHEN** executing `openspec change show update-error --json`
-- **THEN** parse the markdown change file
-- **AND** extract change structure and deltas
-- **AND** output valid JSON to stdout
+#### 场景：将变更显示为 JSON
 
-#### Scenario: List all changes
+- **当** 执行 `openspec change show update-error --json` 时
+- **那么** 解析 markdown 变更文件
+- **并且** 提取变更结构和增量
+- **并且** 将有效 JSON 输出到 stdout
 
-- **WHEN** executing `openspec change list`
-- **THEN** scan the openspec/changes directory
-- **AND** return list of all pending changes
-- **AND** support JSON output with `--json` flag
+#### 场景：列出所有变更
 
-#### Scenario: Show only requirement changes
+- **当** 执行 `openspec change list` 时
+- **那么** 扫描 openspec/changes 目录
+- **并且** 返回所有待处理变更的列表
+- **并且** 支持使用 `--json` 标志的 JSON 输出
 
-- **WHEN** executing `openspec change show update-error --requirements-only`
-- **THEN** display only the requirement changes (ADDED/MODIFIED/REMOVED/RENAMED)
-- **AND** exclude why and what changes sections
+#### 场景：仅显示需求变更
 
-#### Scenario: Validate change structure
+- **当** 执行 `openspec change show update-error --requirements-only` 时
+- **那么** 仅显示需求变更（ADDED/MODIFIED/REMOVED/RENAMED）
+- **并且** 排除 why 和 what 变更部分
 
-- **WHEN** executing `openspec change validate update-error`
-- **THEN** parse the change file
-- **AND** validate against Zod schema
-- **AND** ensure deltas are well-formed
+#### 场景：验证变更结构
 
-### Requirement: Legacy Compatibility
+- **当** 执行 `openspec change validate update-error` 时
+- **那么** 解析变更文件
+- **并且** 根据 Zod schema 验证
+- **并且** 确保增量格式良好
 
-The system SHALL maintain backward compatibility with the existing `list` command while showing deprecation notices.
+### 需求：向后兼容性
 
-#### Scenario: Legacy list command
+系统应在显示弃用通知的同时维护与现有 `list` 命令的向后兼容性。
 
-- **WHEN** executing `openspec list`
-- **THEN** display current list of changes (existing behavior)
-- **AND** show deprecation notice: "Note: 'openspec list' is deprecated. Use 'openspec change list' instead."
+#### 场景：传统 list 命令
 
-#### Scenario: Legacy list with --all flag
+- **当** 执行 `openspec list` 时
+- **那么** 显示当前变更列表（现有行为）
+- **并且** 显示弃用通知："Note: 'openspec list' is deprecated. Use 'openspec change list' instead."
 
-- **WHEN** executing `openspec list --all`
-- **THEN** display all changes (existing behavior)
-- **AND** show same deprecation notice
+#### 场景：带 --all 标志的传统 list
 
-### Requirement: Interactive show selection
+- **当** 执行 `openspec list --all` 时
+- **那么** 显示所有变更（现有行为）
+- **并且** 显示相同的弃用通知
 
-The change show command SHALL support interactive selection when no change name is provided.
+### 需求：交互式 show 选择
 
-#### Scenario: Interactive change selection for show
+change show 命令应在未提供变更名称时支持交互式选择。
 
-- **WHEN** executing `openspec change show` without arguments
-- **THEN** display an interactive list of available changes
-- **AND** allow the user to select a change to show
-- **AND** display the selected change content
-- **AND** maintain all existing show options (--json, --deltas-only)
+#### 场景：show 的交互式变更选择
 
-#### Scenario: Non-interactive fallback keeps current behavior
+- **当** 执行 `openspec change show` 不带参数时
+- **那么** 显示可用变更的交互列表
+- **并且** 允许用户选择要显示的变更
+- **并且** 显示所选变更内容
+- **并且** 保持所有现有 show 选项（--json、--deltas-only）
 
-- **GIVEN** stdin is not a TTY or `--no-interactive` is provided or environment variable `OPEN_SPEC_INTERACTIVE=0`
-- **WHEN** executing `openspec change show` without a change name
-- **THEN** do not prompt interactively
-- **AND** print the existing hint including available change IDs
-- **AND** set `process.exitCode = 1`
+#### 场景：非交互回退保持当前行为
 
-### Requirement: Interactive validation selection
+- **假设** stdin 不是 TTY 或提供了 `--no-interactive` 或环境变量 `OPEN_SPEC_INTERACTIVE=0`
+- **当** 执行 `openspec change show` 而不提供变更名称时
+- **那么** 不进行交互式提示
+- **并且** 打印包含可用变更 ID 的现有提示
+- **并且** 设置 `process.exitCode = 1`
 
-The change validate command SHALL support interactive selection when no change name is provided.
+### 需求：交互式验证选择
 
-#### Scenario: Interactive change selection for validation
+change validate 命令应在未提供变更名称时支持交互式选择。
 
-- **WHEN** executing `openspec change validate` without arguments
-- **THEN** display an interactive list of available changes
-- **AND** allow the user to select a change to validate
-- **AND** validate the selected change
+#### 场景：验证的交互式变更选择
 
-#### Scenario: Non-interactive fallback keeps current behavior
+- **当** 执行 `openspec change validate` 不带参数时
+- **那么** 显示可用变更的交互列表
+- **并且** 允许用户选择要验证的变更
+- **并且** 验证所选变更
 
-- **GIVEN** stdin is not a TTY or `--no-interactive` is provided or environment variable `OPEN_SPEC_INTERACTIVE=0`
-- **WHEN** executing `openspec change validate` without a change name
-- **THEN** do not prompt interactively
-- **AND** print the existing hint including available change IDs
-- **AND** set `process.exitCode = 1`
+#### 场景：非交互回退保持当前行为
 
+- **假设** stdin 不是 TTY 或提供了 `--no-interactive` 或环境变量 `OPEN_SPEC_INTERACTIVE=0`
+- **当** 执行 `openspec change validate` 而不提供变更名称时
+- **那么** 不进行交互式提示
+- **并且** 打印包含可用变更 ID 的现有提示
+- **并且** 设置 `process.exitCode = 1`

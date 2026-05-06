@@ -1,86 +1,86 @@
-# cli-show Specification
+# cli-show 规范
 
-## Purpose
-Define top-level `openspec show` behavior for interactive and direct display of change and spec content.
+## 目的
+定义顶级 `openspec show` 命令的行为，用于交互式和直接显示变更和规格内容。
 
-## Requirements
-### Requirement: Top-level show command
+## 需求
 
-The CLI SHALL provide a top-level `show` command for displaying changes and specs with intelligent selection.
+### 需求：顶级 show 命令
 
-#### Scenario: Interactive show selection
+CLI 应提供顶级 `show` 命令，用于显示变更和规格，并具有智能选择功能。
 
-- **WHEN** executing `openspec show` without arguments
-- **THEN** prompt user to select type (change or spec)
-- **AND** display list of available items for selected type
-- **AND** show the selected item's content
+#### 场景：交互式 show 选择
 
-#### Scenario: Non-interactive environments do not prompt
+- **当** 执行 `openspec show` 不带参数时
+- **那么** 提示用户选择类型（变更或规格）
+- **并且** 显示所选类型的可用项目列表
+- **并且** 显示所选项目的内容
 
-- **GIVEN** stdin is not a TTY or `--no-interactive` is provided or environment variable `OPEN_SPEC_INTERACTIVE=0`
-- **WHEN** executing `openspec show` without arguments
-- **THEN** do not prompt
-- **AND** print a helpful hint with examples for `openspec show <item>` or `openspec change/spec show`
-- **AND** exit with code 1
+#### 场景：非交互环境不提示
 
-#### Scenario: Direct item display
+- **假设** stdin 不是 TTY 或提供了 `--no-interactive` 或环境变量 `OPEN_SPEC_INTERACTIVE=0`
+- **当** 执行 `openspec show` 不带参数时
+- **那么** 不提示
+- **并且** 打印包含 `openspec show <item>` 或 `openspec change/spec show` 示例的有用提示
+- **并且** 以代码 1 退出
 
-- **WHEN** executing `openspec show <item-name>`
-- **THEN** automatically detect if item is a change or spec
-- **AND** display the item's content
-- **AND** use appropriate formatting based on item type
+#### 场景：直接项目显示
 
-#### Scenario: Type detection and ambiguity handling
+- **当** 执行 `openspec show <item-name>` 时
+- **那么** 自动检测项目是变更还是规格
+- **并且** 显示项目内容
+- **并且** 根据项目类型使用适当的格式
 
-- **WHEN** executing `openspec show <item-name>`
-- **THEN** if `<item-name>` uniquely matches a change or a spec, show that item
-- **AND** if it matches both, print an ambiguity error and suggest `--type change|spec` or using `openspec change show`/`openspec spec show`
-- **AND** if it matches neither, print not-found with nearest-match suggestions
+#### 场景：类型检测和歧义处理
 
-#### Scenario: Explicit type override
+- **当** 执行 `openspec show <item-name>` 时
+- **那么** 如果 `<item-name>` 唯一匹配变更或规格，则显示该项目
+- **并且** 如果同时匹配两者，打印歧义错误并建议使用 `--type change|spec` 或使用 `openspec change show`/`openspec spec show`
+- **并且** 如果都不匹配，打印未找到并提供最近匹配建议
 
-- **WHEN** executing `openspec show --type change <item>`
-- **THEN** treat `<item>` as a change ID and show it (skipping auto-detection)
+#### 场景：显式类型覆盖
 
-- **WHEN** executing `openspec show --type spec <item>`
-- **THEN** treat `<item>` as a spec ID and show it (skipping auto-detection)
+- **当** 执行 `openspec show --type change <item>` 时
+- **那么** 将 `<item>` 作为变更 ID 处理并显示（跳过自动检测）
 
-### Requirement: Output format options
+- **当** 执行 `openspec show --type spec <item>` 时
+- **那么** 将 `<item>` 作为规格 ID 处理并显示（跳过自动检测）
 
-The show command SHALL support various output formats consistent with existing commands.
+### 需求：输出格式选项
 
-#### Scenario: JSON output
+show 命令应支持与现有命令一致的多种输出格式。
 
-- **WHEN** executing `openspec show <item> --json`
-- **THEN** output the item in JSON format
-- **AND** include parsed metadata and structure
-- **AND** maintain format consistency with existing change/spec show commands
+#### 场景：JSON 输出
 
-#### Scenario: Flag scoping and delegation
+- **当** 执行 `openspec show <item> --json` 时
+- **那么** 以 JSON 格式输出项目
+- **并且** 包含解析的元数据和结构
+- **并且** 与现有的 change/spec show 命令保持格式一致
 
-- **WHEN** showing a change or a spec via the top-level command
-- **THEN** accept common flags such as `--json`
-- **AND** pass through type-specific flags to the corresponding implementation
-  - Change-only flags: `--deltas-only` (alias `--requirements-only` deprecated)
-  - Spec-only flags: `--requirements`, `--no-scenarios`, `-r/--requirement`
-- **AND** ignore irrelevant flags for the detected type with a warning
+#### 场景：标志作用域和委托
 
-### Requirement: Interactivity controls
+- **当** 通过顶级命令显示变更或规格时
+- **那么** 接受通用标志，如 `--json`
+- **并且** 将类型特定标志传递到相应实现
+  - 仅变更标志：`--deltas-only`（别名 `--requirements-only` 已弃用）
+  - 仅规格标志：`--requirements`、`--no-scenarios`、`-r/--requirement`
+- **并且** 对检测类型无关的标志显示警告并忽略
 
-- The CLI SHALL respect `--no-interactive` to disable prompts.
-- The CLI SHALL respect `OPEN_SPEC_INTERACTIVE=0` to disable prompts globally.
-- Interactive prompts SHALL only be shown when stdin is a TTY and interactivity is not disabled.
+### 需求：交互控制
 
-#### Scenario: Change-specific options
+- CLI 应尊重 `--no-interactive` 以禁用提示。
+- CLI 应尊重 `OPEN_SPEC_INTERACTIVE=0` 以全局禁用提示。
+- 仅当 stdin 是 TTY 且交互性未禁用时，才显示交互提示。
 
-- **WHEN** showing a change with `openspec show <change-name> --deltas-only`
-- **THEN** display only the deltas in JSON format
-- **AND** maintain compatibility with existing change show options
+#### 场景：变更特定选项
 
-#### Scenario: Spec-specific options  
+- **当** 使用 `openspec show <change-name> --deltas-only` 显示变更时
+- **那么** 仅以 JSON 格式显示增量
+- **并且** 与现有的 change show 选项保持兼容性
 
-- **WHEN** showing a spec with `openspec show <spec-id> --requirements`
-- **THEN** display only requirements in JSON format
-- **AND** support other spec options (--no-scenarios, -r)
-- **AND** maintain compatibility with existing spec show options
+#### 场景：规格特定选项
 
+- **当** 使用 `openspec show <spec-id> --requirements` 显示规格时
+- **那么** 仅以 JSON 格式显示需求
+- **并且** 支持其他规格选项（--no-scenarios、-r）
+- **并且** 与现有的 spec show 选项保持兼容性

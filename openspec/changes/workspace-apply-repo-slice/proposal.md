@@ -1,48 +1,48 @@
-## Why
+## 为什么
 
-After a workspace proposal exists, users need a practical way to implement one repo slice at a time.
+在 workspace 提案存在后，用户需要一个实际的方式来一次实现一个 repo slice。
 
-In the proper workspace model, apply means implementation:
+在正确的 workspace 模型中，apply 意味着实现：
 
 ```text
-Take the selected workspace change.
-Take the selected repo slice.
-Open or use the right checkout.
-Implement that slice while preserving the workspace plan.
+获取选定的 workspace 变更。
+获取选定的 repo slice。
+打开或使用正确的 checkout。
+在保留 workspace 计划的同时实现该 slice。
 ```
 
-It should not mean copying or materializing planning files into every repo as a user-facing workflow.
+它不应该意味着将规划文件复制或物化到每个 repo 作为用户面向的工作流。
 
-## What Changes
+## 什么变更
 
-Add the repo-slice apply workflow for workspace changes:
+添加 workspace 变更的 repo-slice apply 工作流：
 
-- select a workspace change
-- select one target repo alias
-- resolve the local checkout for that alias
-- provide the agent with the workspace plan and repo-specific implementation context
-- track progress without making the workspace lose ownership of the plan
+- 选择一个 workspace 变更
+- 选择一个目标 repo 别名
+- 解析该别名的本地 checkout
+- 为 agent 提供 workspace 计划和 repo 特定的实现上下文
+- 在不让 workspace 失去计划所有权的情况下跟踪进度
 
-The workflow should support implementation across separate branches or sessions while keeping the workspace proposal as the continuity layer.
+工作流应支持跨独立分支或会话的实现，同时保持 workspace 提案作为连续性层。
 
-Planning dependency:
+规划依赖：
 
-- Depends on `workspace-change-planning`.
+- 取决于 `workspace-change-planning`。
 
-## Capabilities
+## 能力
 
-### New Capabilities
+### 新能力
 
-- `workspace-repo-slice-apply`: Applies one repo slice of a workspace change as an implementation workflow.
+- `workspace-repo-slice-apply`：将 workspace 变更的一个 repo slice 作为实现工作流应用。
 
-### Modified Capabilities
+### 修改的能力
 
-- `cli-artifact-workflow`: Defines workspace apply as implementation rather than materialization.
-- `context-injection`: Supplies repo-specific implementation context from a workspace change.
+- `cli-artifact-workflow`：将 workspace apply 定义为实现而非物化。
+- `context-injection`：从 workspace 变更提供 repo 特定的实现上下文。
 
-## Impact
+## 影响
 
-- Workspace apply command behavior.
-- Agent handoff text for repo-slice implementation.
-- Local checkout resolution and branch/worktree assumptions.
-- Tests that apply operates on one target repo slice and does not require copying workspace planning artifacts as the primary user contract.
+- Workspace apply 命令行为。
+- Repo-slice 实现的 agent 交接文本。
+- 本地 checkout 解析和 branch/worktree 假设。
+- 测试 apply 操作在一个目标 repo slice 上，不需要将 workspace 规划工件复制作为主要用户契约。

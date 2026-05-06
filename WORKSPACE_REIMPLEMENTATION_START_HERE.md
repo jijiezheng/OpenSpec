@@ -1,8 +1,8 @@
-# Workspace Reimplementation Start Here
+# 工作区重构从这里开始
 
-This is the grep-friendly entry point for agents working on the workspace reimplementation.
+这是为从事工作区重构的 agent 提供的 grep 友好入口点。
 
-Useful search terms:
+有用的搜索词：
 
 ```text
 workspace reimplementation
@@ -14,26 +14,26 @@ fresh agent
 start here
 ```
 
-## Start Here
+## 从这里开始
 
-Read these files in order:
+按顺序阅读这些文件：
 
 1. `WORKSPACE_REIMPLEMENTATION_DIRECTION.md`
 2. `openspec/changes/workspace-reimplementation-roadmap/README.md`
 3. `openspec/changes/workspace-reimplementation-roadmap/POC_REFERENCE_GUIDE.md`
-4. The proposal for the next implementation slice
+4. 下一个实现切片的 proposal
 
-The POC reference commit is:
+POC 参考提交是：
 
 ```text
 workspace-poc @ 79a45ac043f414e63d13e08b9da83b135cb20a39
 ```
 
-Use the POC as research material. Do not merge it into an implementation branch. Do not preserve its architecture unless a slice proposal or design explicitly decides to do so.
+将 POC 作为研究材料。不要将其合并到实现分支。除非切片 proposal 或设计明确决定，否则不要保留其架构。
 
-## Implementation Order
+## 实现顺序
 
-Implement these flat OpenSpec changes in order:
+按顺序实现这些扁平的 OpenSpec 变更：
 
 1. `workspace-foundation`
 2. `workspace-create-and-register-repos`
@@ -42,26 +42,26 @@ Implement these flat OpenSpec changes in order:
 5. `workspace-apply-repo-slice`
 6. `workspace-verify-and-archive`
 
-`workspace-reimplementation-roadmap` is the continuity and reference container for the plan.
+`workspace-reimplementation-roadmap` 是计划的连续性和参考容器。
 
-## Before Editing
+## 编辑之前
 
-For the slice you are about to implement, inspect the pinned POC commit using `POC_REFERENCE_GUIDE.md`, then write down:
+对于你即将实现的切片，使用 `POC_REFERENCE_GUIDE.md` 检查固定的 POC 提交，然后写下：
 
 ```text
-POC findings for <slice>:
+<切片> 的 POC 发现：
 
-User behavior to preserve:
+要保留的用户行为：
 - ...
 
-Tests or examples worth translating:
+值得翻译的测试或示例：
 - ...
 
-Implementation shortcuts to avoid:
+要避免的实现捷径：
 - ...
 
-Open design questions:
+悬而未决的设计问题：
 - ...
 ```
 
-Capture durable findings in the relevant OpenSpec artifact so future sessions do not depend on chat history.
+在相关的 OpenSpec artifact 中捕获持久性发现，以便未来的会话不依赖于聊天历史。

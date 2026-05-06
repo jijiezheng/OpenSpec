@@ -1,33 +1,33 @@
-# Workspace Reimplementation Roadmap
+# Workspace 重新实现路线图
 
-This change is the continuity layer for reimplementing workspace support across multiple sessions and branches.
+此变更是跨多个会话和分支重新实现 workspace 支持的连续性层。
 
-Root entry point for fresh agents: `WORKSPACE_REIMPLEMENTATION_START_HERE.md`.
+新鲜 agent 的根入口点：`WORKSPACE_REIMPLEMENTATION_START_HERE.md`。
 
-The user journey we are implementing is:
+我们正在实现的用户旅程是：
 
 ```text
-create workspace
-  -> add repos
-  -> open workspace with agent context
-  -> plan a cross-repo change
-  -> implement one repo slice
-  -> verify and archive
+创建 workspace
+  -> 添加 repos
+  -> 使用 agent 上下文打开 workspace
+  -> 规划跨 repo 变更
+  -> 实现一个 repo slice
+  -> 验证和归档
 ```
 
-The POC branch is reference material only:
+POC 分支仅作为参考材料：
 
 ```text
 workspace-poc @ 79a45ac043f414e63d13e08b9da83b135cb20a39
 ```
 
-Use it to understand behavior, tests, and lessons learned. Do not merge it or preserve its architecture by default. The full source direction document from that branch is copied at the repository root as `WORKSPACE_REIMPLEMENTATION_DIRECTION.md`.
+用它来理解行为、测试和经验教训。不要默认合并它或保留其架构。该分支的完整源方向文档在仓库根目录复制为 `WORKSPACE_REIMPLEMENTATION_DIRECTION.md`。
 
-Fresh agents should read `POC_REFERENCE_GUIDE.md` before implementing any slice. That guide explains how to inspect the pinned POC commit, which files to read for each slice, and what findings to bring back into the OpenSpec artifacts.
+新鲜 agent 在实现任何 slice 之前应阅读 `POC_REFERENCE_GUIDE.md`。该指南解释如何检查固定的 POC 提交、每个 slice 应阅读哪些文件，以及将哪些发现带回 OpenSpec 工件。
 
-## Change Order
+## 变更顺序
 
-Implement the flat sibling changes in this order:
+按此顺序实现平面兄弟变更：
 
 1. `workspace-foundation`
 2. `workspace-create-and-register-repos`
@@ -36,36 +36,35 @@ Implement the flat sibling changes in this order:
 5. `workspace-apply-repo-slice`
 6. `workspace-verify-and-archive`
 
-OpenSpec currently discovers active changes as immediate directories under `openspec/changes/`, and change names are kebab-case identifiers. Keep these changes as flat siblings until formal change-stacking metadata is available.
+OpenSpec 当前将活动变更发现为 `openspec/changes/` 下的即时目录，变更名称是 kebab-case 标识符。将这些变更保持为平面兄弟，直到正式的变更堆叠元数据可用。
 
-## Dependency Notes
+## 依赖注释
 
-`workspace-foundation` establishes the storage, root detection, and naming model. Every later slice should build on that model instead of redefining workspace metadata.
+`workspace-foundation` 建立存储、根检测和命名模型。每个后来的 slice 应该在该模型之上构建，而不是重新定义 workspace 元数据。
 
-`workspace-create-and-register-repos` creates the workspace and makes linked repos or folders visible before a change exists. Linked items may be full repos, monorepo modules, or planning-only code areas. This preserves the product rule that workspace visibility is not change commitment.
+`workspace-create-and-register-repos` 创建 workspace 并在变更存在之前使链接的 repos 或文件夹可见。链接项可以是完整的 repos、monorepo 模块或仅用于规划的代码区域。这保留了产品规则，即 workspace 可见性不是变更承诺。
 
-`workspace-open-agent-context` gives the agent the workspace root, linked repos or folders, active changes, and selected change scope.
+`workspace-open-agent-context` 给 agent 提供 workspace 根目录、链接的 repos 或文件夹、活动变更和选定的变更范围。
 
-`workspace-change-planning` creates the workspace-level planning commitment and identifies target repo slices.
+`workspace-change-planning` 创建 workspace 级规划承诺并识别目标 repo slices。
 
-`workspace-apply-repo-slice` treats apply as implementation of one selected repo slice, not materialization of workspace planning files.
+`workspace-apply-repo-slice` 将 apply 视为对一个选定的 repo slice 的实现，而不是 workspace 规划文件的物化。
 
-`workspace-verify-and-archive` makes cross-repo progress visible and separates partial repo completion from final workspace completion.
+`workspace-verify-and-archive` 使跨 repo 进度可见，并将部分 repo 完成与最终 workspace 完成分开。
 
-## Session Handoff Prompt
+## 会话交接提示
 
-Use this prompt at the start of future implementation sessions:
+在未来的实现会话开始时使用此提示：
 
 ```text
-Continue the workspace reimplementation roadmap. Read
-openspec/changes/workspace-reimplementation-roadmap/README.md and
-openspec/changes/workspace-reimplementation-roadmap/POC_REFERENCE_GUIDE.md
-first, then pick up the next unfinished flat sibling change in order. Use
-workspace-poc at 79a45ac043f414e63d13e08b9da83b135cb20a39 as reference
-material only. Preserve intended behavior, but reimplement cleanly from the
-current base. Before editing, summarize the POC findings for the slice.
+继续 workspace 重新实现路线图。首先阅读
+openspec/changes/workspace-reimplementation-roadmap/README.md 和
+openspec/changes/workspace-reimplementation-roadmap/POC_REFERENCE_GUIDE.md，
+然后按顺序选择下一个未完成的平面兄弟变更。使用
+workspace-poc at 79a45ac043f414e63d13e08b9da83b135cb20a39 作为参考材料。
+保留预期行为，但从当前基础重新实现。在编辑之前，总结该 slice 的 POC 发现。
 ```
 
-## Branching Guidance
+## 分支指导
 
-Each sibling change may be implemented on its own branch or PR. Keep decisions that affect later slices in this README or in the relevant proposal so future sessions do not depend on chat history.
+每个兄弟变更可以在自己的分支或 PR 上实现。将影响后来 slice 的决定保留在此 README 或相关提案中，以便未来会话不依赖于聊天历史。

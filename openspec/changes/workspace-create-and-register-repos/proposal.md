@@ -1,29 +1,29 @@
-## Why
+## 为什么
 
-Users start workspace work by creating a planning home and linking the repos or folders OpenSpec should know about.
+用户通过创建规划之家并链接 OpenSpec 应该知道的 repos 或文件夹来开始 workspace 工作。
 
-They should not have to create a change before OpenSpec can see the relevant repos, monorepo folders, packages, services, or apps.
+在 OpenSpec 可以看到相关的 repos、monorepo 文件夹、包、服务或应用之前，他们不应被迫创建变更。
 
-The product rule is:
-
-```text
-Workspace visibility is not change commitment.
-```
-
-A workspace is the durable planning home. A change is a feature, fix, project, or other planned piece of work inside that workspace.
-
-## What Changes
-
-Add the first user-facing workspace setup flow:
+产品规则是：
 
 ```text
-Set up a workspace.
-Link existing repos or folders.
-List known workspaces and what they link to.
-Check what OpenSpec can resolve and how to fix problems.
+Workspace 可见性不是变更承诺。
 ```
 
-Expected user surface:
+Workspace 是持久的规划之家。变更是该 workspace 内的一个功能、修复、项目或其他计划的工作。
+
+## 什么变更
+
+添加第一个用户面向的 workspace 设置流程：
+
+```text
+设置一个 workspace。
+链接现有的 repos 或文件夹。
+列出已知的 workspaces 及其链接的内容。
+检查 OpenSpec 可以解析什么以及如何修复问题。
+```
+
+预期的用户表面：
 
 ```bash
 openspec workspace setup
@@ -36,70 +36,70 @@ openspec workspace relink api /new/path/to/api
 openspec workspace doctor
 ```
 
-`workspace setup` is the creation path for users. It should ask for the workspace name first, create the workspace in the standard location, require at least one existing repo or folder path, infer link names from folder names, show the workspace path, and run a check at the end so the user knows what OpenSpec can see.
+`workspace setup` 是用户的创建路径。它应该首先询问 workspace 名称，在标准位置创建 workspace，至少需要一个现有的 repo 或文件夹路径，从文件夹名称推断链接名称，显示 workspace 路径，并在最后运行检查，以便用户知道 OpenSpec 可以看到什么。
 
-`workspace setup --no-interactive` is the automation path. It should require enough flags to create a useful workspace, including a workspace name and at least one link.
+`workspace setup --no-interactive` 是自动化路径。它应该需要足够的标志来创建一个有用的 workspace，包括 workspace 名称和至少一个链接。
 
-`workspace list` shows known OpenSpec-managed workspaces from the local workspace registry, including each workspace path and linked repos or folders.
+`workspace list` 从本地 workspace 注册表显示已知的 OpenSpec 管理的 workspaces，包括每个 workspace 路径和链接的 repos 或文件夹。
 
-`workspace link` records an existing local repo or folder path for the selected workspace. It should support a simple form that infers the link name from the folder name and an explicit-name form for conflicts or clarity. Linking does not create, copy, move, initialize, or edit files in the linked repo or folder.
+`workspace link` 为选定的 workspace 记录一个现有的本地 repo 或文件夹路径。它应该支持从文件夹名称推断链接名称的简单形式，以及用于冲突或清晰度的显式名称形式。链接不会在链接的 repo 或文件夹中创建、复制、移动、初始化或编辑文件。
 
-`workspace relink` lets users repair or change the local path for an existing link without recreating the workspace. It should not introduce owner or handoff metadata in this slice.
+`workspace relink` 让用户修复或更改现有链接的本地路径，而无需重新创建 workspace。在这个 slice 中不应引入 owner 或 handoff 元数据。
 
-`workspace doctor` explains what the current machine can resolve: the workspace root, the workspace planning path, linked repos or folders, missing paths, stale local registry entries, repo-local specs paths when present, and suggested fixes. It reports issues but does not repair them automatically.
+`workspace doctor` 解释当前机器可以解析的内容：workspace 根目录、workspace 规划路径、链接的 repos 或文件夹、缺失的路径、过时的本地注册表条目、存在时的 repo 本地 specs 路径，以及建议的修复。它报告问题但不自动修复。
 
-Workspace commands should work globally. When a command needs one workspace and the user did not specify it, OpenSpec should use the local registry to show an interactive picker. In non-interactive mode, it should fail with a clear message and suggest `--workspace <name>`.
+Workspace 命令应该全局工作。当命令需要一个 workspace 而用户未指定时，OpenSpec 应该使用本地注册表显示交互式选择器。在非交互模式下，它应该失败并显示清晰的消息并建议 `--workspace <name>`。
 
-Planning dependency:
+规划依赖：
 
-- Depends on `workspace-foundation`.
+- 取决于 `workspace-foundation`。
 
-## POC Findings
+## POC 发现
 
-Behavior to preserve:
+要保留的行为：
 
-- `workspace setup` was the friendly onboarding path.
-- `workspace list` made managed workspaces discoverable.
-- A direct automation path is still useful, but it should live under `workspace setup --no-interactive`.
-- Link repair is useful, but owner/handoff metadata should not carry forward in this slice.
-- `workspace doctor` was the right place to answer "what does OpenSpec know about this workspace?"
-- Shared workspace state and local paths were stored separately.
-- Setup failed cleanly when non-interactive inputs were incomplete.
-- Created workspaces ignored machine-local path state.
+- `workspace setup` 是友好的 onboarding 路径。
+- `workspace list` 使托管 workspaces 可被发现。
+- 直接的自动化路径仍然有用，但它应该位于 `workspace setup --no-interactive` 下。
+- 链接修复很有用，但 owner/handoff 元数据不应在此 slice 中延续。
+- `workspace doctor` 是回答"OpenSpec 知道这个 workspace 的什么？"的正确答案。
+- 共享 workspace 状态和本地路径分开存储。
+- 当非交互式输入不完整时，设置干净地失败。
+- 创建的 workspaces 忽略机器本地路径状态。
 
-Behavior to change:
+要改变的行为：
 
-- The POC required registered repos to already contain repo-local `openspec/`. This should become an implementation-readiness signal, not a planning prerequisite.
-- The POC used repo-only language. This slice should use "repos or folders" for user-facing text.
-- The public command should be `workspace link`, not `workspace add-repo`.
-- The repair command should be `workspace relink`, not `workspace update-repo`.
-- Public `workspace create` should be removed for the first release. Setup should be the creation flow.
-- The POC's `setup` flow stored preferred agent/open behavior. Agent launch preferences belong to `workspace-open-agent-context`, not this slice.
-- Human output should avoid implementation terms such as working set, code area, entry, alias, or local overlay.
-- `setup` should require at least one linked repo or folder so the created workspace is immediately useful.
+- POC 要求注册的 repos 已经包含 repo 本地的 `openspec/`。这应该成为实现就绪信号，而不是规划先决条件。
+- POC 使用仅 repo 的语言。这个 slice 应该在用户面向的文本中使用"repos 或文件夹"。
+- 公共命令应该是 `workspace link`，而不是 `workspace add-repo`。
+- 修复命令应该是 `workspace relink`，而不是 `workspace update-repo`。
+- 公共 `workspace create` 应该在第一次发布中移除。Setup 应该是创建流程。
+- POC 的 `setup` 流程存储了首选 agent/open 行为。Agent 启动偏好属于 `workspace-open-agent-context`，不是这个 slice。
+- 人类输出应该避免实现术语，如工作集、代码区域、条目、别名或本地覆盖。
+- `setup` 应该至少需要一个链接的 repo 或文件夹，以便创建的 workspace 立即有用。
 
-## Non-Goals
+## 非目标
 
-- No public `openspec workspace create` command in this first release.
-- No workspace-open agent launch behavior.
-- No preferred-agent prompts or saved agent preference.
-- No owner or handoff metadata fields.
-- No workspace change creation or target selection.
-- No apply, verify, archive, branch, or worktree behavior.
-- No requirement that linked repos or folders have repo-local OpenSpec state.
-- No automatic repair behavior in `workspace doctor`.
+- 在此第一次发布中没有公共 `openspec workspace create` 命令。
+- 无 workspace-open agent 启动行为。
+- 无首选 agent 提示或保存的 agent 偏好。
+- 无 owner 或 handoff 元数据字段。
+- 无 workspace 变更创建或目标选择。
+- 无 apply、verify、archive、branch 或 worktree 行为。
+- 无链接的 repos 或文件夹具有 repo 本地 OpenSpec 状态的要求。
+- 在 `workspace doctor` 中无自动修复行为。
 
-## Capabilities
+## 能力
 
-### New Capabilities
+### 新能力
 
-- `workspace-links`: Lets users set up a workspace, link repos or folders, list known workspaces, and check workspace resolution before change creation.
+- `workspace-links`：让用户设置 workspace、链接 repos 或文件夹、列出已知的 workspaces，并在变更创建之前检查 workspace 解析。
 
-### Modified Capabilities
+### 修改的能力
 
-- `cli-artifact-workflow`: Introduces workspace setup commands that happen before change creation.
+- `cli-artifact-workflow`：引入在变更创建之前发生的 workspace 设置命令。
 
-## Impact
+## 影响
 
 - `openspec workspace setup`
 - `openspec workspace list`
@@ -107,5 +107,5 @@ Behavior to change:
 - `openspec workspace link`
 - `openspec workspace relink`
 - `openspec workspace doctor`
-- Local workspace registry usage from `workspace-foundation`.
-- Docs and generated guidance that explain linked repos/folders as planning context, not implementation commitment.
+- 来自 `workspace-foundation` 的本地 workspace 注册表使用。
+- 解释链接的 repos/folders 作为规划上下文而非实现承诺的文档和生成的指导。

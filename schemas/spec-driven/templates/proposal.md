@@ -1,23 +1,23 @@
 ## Why
 
-<!-- Explain the motivation for this change. What problem does this solve? Why now? -->
+<!-- 解释此变更的动机。它解决什么问题？为什么是现在？-->
 
 ## What Changes
 
-<!-- Describe what will change. Be specific about new capabilities, modifications, or removals. -->
+<!-- 描述将发生什么变更。具体说明新能力、修改或删除。-->
 
 ## Capabilities
 
 ### New Capabilities
-<!-- Capabilities being introduced. Replace <name> with kebab-case identifier (e.g., user-auth, data-export, api-rate-limiting). Each creates specs/<name>/spec.md -->
-- `<name>`: <brief description of what this capability covers>
+<!-- 正在引入的能力。将 <name> 替换为 kebab-case 标识符（例如 user-auth、data-export、api-rate-limiting）。每个创建 specs/<name>/spec.md -->
+- `<name>`: <简要描述此能力涵盖的内容>
 
 ### Modified Capabilities
-<!-- Existing capabilities whose REQUIREMENTS are changing (not just implementation).
-     Only list here if spec-level behavior changes. Each needs a delta spec file.
-     Use existing spec names from openspec/specs/. Leave empty if no requirement changes. -->
-- `<existing-name>`: <what requirement is changing>
+<!-- 需求正在变更的现有能力（不仅仅是实现）。
+     仅在此处列出如果规格级行为变更。每个需要一个增量规格文件。
+     使用 openspec/specs/ 中的现有规格名称。如果没有需求变更则留空。-->
+- `<existing-name>`: <正在变更什么需求>
 
 ## Impact
 
-<!-- Affected code, APIs, dependencies, systems -->
+<!-- 受影响的代码、API、依赖、系统 -->

@@ -2,552 +2,552 @@
 
 ## 1.3.1
 
-### Patch Changes
+### 补丁变更
 
-- [#995](https://github.com/Fission-AI/OpenSpec/pull/995) [`d1f3861`](https://github.com/Fission-AI/OpenSpec/commit/d1f3861d9ec694cc924b042b5da01963dcf93137) Thanks [@TabishB](https://github.com/TabishB)! - ### Bug Fixes
+- [#995](https://github.com/Fission-AI/OpenSpec/pull/995) [`d1f3861`](https://github.com/Fission-AI/OpenSpec/commit/d1f3861d9ec694cc924b042b5da01963dcf93137) 感谢 [@TabishB](https://github.com/TabishB)！ - ### Bug 修复
 
-  - **Canonical artifact paths** — Workflow artifact paths are now resolved via the native `realpath`, so symlinks and case-insensitive filesystems no longer cause path mismatches during apply and archive.
-  - **Glob apply instructions** — Apply instructions with glob artifact outputs now resolve correctly, and literal artifact outputs are enforced to be file paths.
-  - **Hidden main spec requirements** — Requirements nested inside fenced code blocks or otherwise hidden in main specs are now detected during validation.
-  - **Clean `--json` output** — Spinner progress text no longer leaks into stderr when `--json` is passed, so AI agents that combine stdout and stderr can parse the JSON reliably.
-  - **Silent telemetry in firewalled environments** — PostHog network errors are now swallowed with a 1s timeout and retries/remote config disabled, so OpenSpec no longer surfaces `PostHogFetchNetworkError` in locked-down networks. Telemetry opt-out is documented earlier in the README, installation guide, and CLI reference.
+  - **规范 artifact 路径** — 工作流 artifact 路径现在通过原生 `realpath` 解析，因此符号链接和不区分大小写的文件系统在应用和归档期间不再导致路径不匹配。
+  - **Glob 应用指令** — 带 glob artifact 输出的应用指令现在可以正确解析，文字 artifact 输出被强制为文件路径。
+  - **隐藏的主规格需求** — 嵌套在代码块中或以其他方式隐藏在主规格中的需求现在在验证期间被检测到。
+  - **干净的 `--json` 输出** — 当传递 `--json` 时，微调器进度文本不再泄漏到 stderr，因此结合 stdout 和 stderr 的 AI agent 可以可靠地解析 JSON。
+  - **防火墙环境中的静默遥测** — PostHog 网络错误现在以 1 秒超时和禁用重试/远程配置被吞掉，因此 OpenSpec 不再在封闭网络中显示 `PostHogFetchNetworkError`。遥测选择退出文档在 README、安装指南和 CLI 参考中更早出现。
 
 ## 1.3.0
 
-### Minor Changes
+### 次要变更
 
-- [#952](https://github.com/Fission-AI/OpenSpec/pull/952) [`cce787e`](https://github.com/Fission-AI/OpenSpec/commit/cce787ec4083da2b27781f6786f5ce0002909a7b) Thanks [@TabishB](https://github.com/TabishB)! - ### New Features
+- [#952](https://github.com/Fission-AI/OpenSpec/pull/952) [`cce787e`](https://github.com/Fission-AI/OpenSpec/commit/cce787ec4083da2b27781f6786f5ce0002909a7b) 感谢 [@TabishB](https://github.com/TabishB)！ - ### 新功能
 
-  - **Junie support** — Added tool and command generation for JetBrains Junie
-  - **Lingma IDE support** — Added configuration support for Lingma IDE
-  - **ForgeCode support** — Added tool support for ForgeCode
-  - **IBM Bob support** — Added support for IBM Bob coding assistant
+  - **Junie 支持** — 为 JetBrains Junie 添加了工具和命令生成
+  - **Lingma IDE 支持** — 为 Lingma IDE 添加了配置支持
+  - **ForgeCode 支持** — 为 ForgeCode 添加了工具支持
+  - **IBM Bob 支持** — 添加了对 IBM Bob 编码助手的支持
 
-  ### Bug Fixes
+  ### Bug 修复
 
-  - **Shell completions opt-in** — Completion install is now opt-in, fixing PowerShell encoding corruption
-  - **Copilot auto-detection** — Prevented false GitHub Copilot detection from a bare `.github/` directory
-  - **pi.dev command generation** — Fixed command reference transforms and template argument passing
+  - **Shell 补全可选** — 补全安装现在是可选的，修复了 PowerShell 编码损坏问题
+  - **Copilot 自动检测** — 阻止了来自裸 `.github/` 目录的误报 GitHub Copilot 检测
+  - **pi.dev 命令生成** — 修复了命令引用转换和模板参数传递
 
-### Patch Changes
+### 补丁变更
 
-- [#760](https://github.com/Fission-AI/OpenSpec/pull/760) [`61eb999`](https://github.com/Fission-AI/OpenSpec/commit/61eb999f7c6c0fc98d2e7f3678756fce6a3f4378) Thanks [@fsilvaortiz](https://github.com/fsilvaortiz)! - fix: OpenCode adapter now uses `.opencode/commands/` (plural) to match OpenCode's official directory convention. Fixes #748.
+- [#760](https://github.com/Fission-AI/OpenSpec/pull/760) [`61eb999`](https://github.com/Fission-AI/OpenSpec/commit/61eb999f7c6c0fc98d2e7f3678756fce6a3f4378) 感谢 [@fsilvaortiz](https://github.com/fsilvaortiz)！ - fix: OpenCode 适配器现在使用 `.opencode/commands/`（复数）来匹配 OpenCode 的官方目录约定。修复了 #748。
 
-- [#759](https://github.com/Fission-AI/OpenSpec/pull/759) [`afdca0d`](https://github.com/Fission-AI/OpenSpec/commit/afdca0d5dab1aa109cfd8848b2512333ccad60c3) Thanks [@fsilvaortiz](https://github.com/fsilvaortiz)! - fix: `openspec status` now exits gracefully when no changes exist instead of throwing a fatal error. Fixes #714.
+- [#759](https://github.com/Fission-AI/OpenSpec/pull/759) [`afdca0d`](https://github.com/Fission-AI/OpenSpec/commit/afdca0d5dab1aa109cfd8848b2512333ccad60c3) 感谢 [@fsilvaortiz](https://github.com/fsilvaortiz)！ - fix: `openspec status` 现在在没有变更存在时优雅退出，而不是抛出致命错误。修复了 #714。
 
 ## 1.2.0
 
-### Minor Changes
+### 次要变更
 
-- [#747](https://github.com/Fission-AI/OpenSpec/pull/747) [`1e94443`](https://github.com/Fission-AI/OpenSpec/commit/1e94443a3551b228eecbc89e95d96d3b9600a192) Thanks [@TabishB](https://github.com/TabishB)! - ### New Features
+- [#747](https://github.com/Fission-AI/OpenSpec/pull/747) [`1e94443`](https://github.com/Fission-AI/OpenSpec/commit/1e94443a3551b228eecbc89e95d96d3b9600a192) 感谢 [@TabishB](https://github.com/TabishB)！ - ### 新功能
 
-  - **Profile system** — Choose between `core` (4 essential workflows) and `custom` (pick any subset) profiles to control which skills get installed. Manage profiles with the new `openspec config profile` command
-  - **Propose workflow** — New one-step workflow creates a complete change proposal with design, specs, and tasks from a single request — no need to run `new` then `ff` separately
-  - **AI tool auto-detection** — `openspec init` now scans your project for existing tool directories (`.claude/`, `.cursor/`, etc.) and pre-selects detected tools
-  - **Pi (pi.dev) support** — Pi coding agent is now a supported tool with prompt and skill generation
-  - **Kiro support** — AWS Kiro IDE is now a supported tool with prompt and skill generation
-  - **Sync prunes deselected workflows** — `openspec update` now removes command files and skill directories for workflows you've deselected, keeping your project clean
-  - **Config drift warning** — `openspec config list` warns when global config is out of sync with the current project
+  - **Profile 系统** — 选择 `core`（4 个基本工作流）和 `custom`（选择任何子集）配置文件来控制安装哪些技能。使用新的 `openspec config profile` 命令管理配置文件
+  - **Propose 工作流** — 新的一步式工作流从单个请求创建完整的变更提案、设计、specs 和 tasks — 无需分别运行 `new` 然后 `ff`
+  - **AI 工具自动检测** — `openspec init` 现在扫描你的项目以查找现有工具目录（`.claude/`、`.cursor/` 等）并预选检测到的工具
+  - **Pi (pi.dev) 支持** — Pi 编码 agent 现在是支持的工具，具有 prompt 和技能生成
+  - **Kiro 支持** — AWS Kiro IDE 现在是支持的工具，具有 prompt 和技能生成
+  - **Sync 修剪取消选择的workflows** — `openspec update` 现在删除你取消选择的workflows 的命令文件和技能目录，保持你的项目干净
+  - **配置漂移警告** — `openspec config list` 在全局配置与当前项目不同步时发出警告
 
-  ### Bug Fixes
+  ### Bug 修复
 
-  - Fixed onboard preflight giving a false "not initialized" error on freshly initialized projects
-  - Fixed archive workflow stopping mid-way when syncing — it now properly resumes after sync completes
-  - Added Windows PowerShell alternatives for onboard shell commands
+  - 修复了 onboard 预检在全新初始化的项目上给出虚假的"未初始化"错误
+  - 修复了归档工作流在同步期间中途停止的问题 — 现在在同步完成后正确恢复
+  - 为 onboard shell 命令添加了 Windows PowerShell 替代方案
 
 ## 1.1.1
 
-### Patch Changes
+### 补丁变更
 
-- [#627](https://github.com/Fission-AI/OpenSpec/pull/627) [`afb73cf`](https://github.com/Fission-AI/OpenSpec/commit/afb73cf9ec59c6f8b26d0c538c0218c203ba3c56) Thanks [@TabishB](https://github.com/TabishB)! - ### Bug Fixes
+- [#627](https://github.com/Fission-AI/OpenSpec/pull/627) [`afb73cf`](https://github.com/Fission-AI/OpenSpec/commit/afb73cf9ec59c6f8b26d0c538c0218c203ba3c56) 感谢 [@TabishB](https://github.com/TabishB)！ - ### Bug 修复
 
-  - **OpenCode command references** — Command references in generated files now use the correct `/opsx-` hyphen format instead of `/opsx:` colon format, ensuring commands work properly in OpenCode
+  - **OpenCode 命令引用** — 生成文件中的命令引用现在使用正确的 `/opsx-` 连字符格式而不是 `/opsx:` 冒号格式，确保命令在 OpenCode 中正常工作
 
 ## 1.1.0
 
-### Minor Changes
+### 次要变更
 
-- [#625](https://github.com/Fission-AI/OpenSpec/pull/625) [`53081fb`](https://github.com/Fission-AI/OpenSpec/commit/53081fb2a26ec66d2950ae0474b9a56cbc5b5a76) Thanks [@TabishB](https://github.com/TabishB)! - ### Bug Fixes
+- [#625](https://github.com/Fission-AI/OpenSpec/pull/625) [`53081fb`](https://github.com/Fission-AI/OpenSpec/commit/53081fb2a26ec66d2950ae0474b9a56cbc5b5a76) 感谢 [@TabishB](https://github.com/TabishB)！ - ### Bug 修复
 
-  - **Codex global path support** — Codex adapter now resolves global paths correctly, fixing workflow file generation when run outside the project directory (#622)
-  - **Archive operations on cross-device or restricted paths** — Archive now falls back to copy+remove when rename fails with EPERM or EXDEV errors, fixing failures on networked/external drives (#605)
-  - **Slash command hints in workflow messages** — Workflow completion messages now display helpful slash command hints for next steps (#603)
-  - **Windsurf workflow file path** — Updated Windsurf adapter to use the correct `workflows` directory instead of the legacy `commands` path (#610)
+  - **Codex 全局路径支持** — Codex 适配器现在正确解析全局路径，修复了在场外项目目录外运行时的 workflow 文件生成（#622）
+  - **跨设备或受限路径上的归档操作** — 当重命名因 EPERM 或 EXDEV 错误失败时，归档现在回退到复制+删除，修复了网络/外部驱动器上的失败（#605）
+  - **工作流消息中的斜杠命令提示** — 工作流完成消息现在显示有用的斜杠命令提示作为下一步（#603）
+  - **Windsurf workflow 文件路径** — 更新了 Windsurf 适配器以使用正确的 `workflows` 目录而不是遗留的 `commands` 路径（#610）
 
-### Patch Changes
+### 补丁变更
 
-- [#550](https://github.com/Fission-AI/OpenSpec/pull/550) [`86d2e04`](https://github.com/Fission-AI/OpenSpec/commit/86d2e04cae76a999dbd1b4571f52fa720036be0c) Thanks [@jerome-benoit](https://github.com/jerome-benoit)! - ### Improvements
+- [#550](https://github.com/Fission-AI/OpenSpec/pull/550) [`86d2e04`](https://github.com/Fission-AI/OpenSpec/commit/86d2e04cae76a999dbd1b4571f52fa720036be0c) 感谢 [@jerome-benoit](https://github.com/jerome-benoit)！ - ### 改进
 
-  - **Nix flake maintenance** — Version now read dynamically from package.json, reducing manual sync issues
-  - **Nix build optimization** — Source filtering excludes node_modules and artifacts, improving build times
-  - **update-flake.sh script** — Detects when hash is already correct, skipping unnecessary rebuilds
+  - **Nix flake 维护** — 版本现在从 package.json 动态读取，减少了手动同步问题
+  - **Nix 构建优化** — 源过滤排除 node_modules 和 artifacts，改善了构建时间
+  - **update-flake.sh 脚本** — 检测哈希是否已经正确，跳过不必要的重建
 
-  ### Other
+  ### 其他
 
-  - Updated Nix CI actions to latest versions (nix-installer v21, magic-nix-cache v13)
+  - 更新了 Nix CI actions 到最新版本（nix-installer v21, magic-nix-cache v13）
 
 ## 1.0.2
 
-### Patch Changes
+### 补丁变更
 
-- [#596](https://github.com/Fission-AI/OpenSpec/pull/596) [`e91568d`](https://github.com/Fission-AI/OpenSpec/commit/e91568deb948073f3e9d9bb2d2ab5bf8080d6cf4) Thanks [@TabishB](https://github.com/TabishB)! - ### Bug Fixes
+- [#596](https://github.com/Fission-AI/OpenSpec/pull/596) [`e91568d`](https://github.com/Fission-AI/OpenSpec/commit/e91568deb948073f3e9d9bb2d2ab5bf8080d6cf4) 感谢 [@TabishB](https://github.com/TabishB)！ - ### Bug 修复
 
-  - Clarified spec naming convention — Specs should be named after capabilities (`specs/<capability>/spec.md`), not changes
-  - Fixed task checkbox format guidance — Tasks now clearly require `- [ ]` checkbox format for apply phase tracking
+  - 明确了规范命名约定 — Specs 应该以能力命名（`specs/<capability>/spec.md`），而不是变更
+  - 修复了任务复选框格式指南 — 任务现在明确要求 `- [ ]` 复选框格式用于应用阶段跟踪
 
 ## 1.0.1
 
-### Patch Changes
+### 补丁变更
 
-- [#587](https://github.com/Fission-AI/OpenSpec/pull/587) [`943e0d4`](https://github.com/Fission-AI/OpenSpec/commit/943e0d41026d034de66b9442d1276c01b293eb2b) Thanks [@TabishB](https://github.com/TabishB)! - ### Bug Fixes
+- [#587](https://github.com/Fission-AI/OpenSpec/pull/587) [`943e0d4`](https://github.com/Fission-AI/OpenSpec/commit/943e0d41026d034de66b9442d1276c01b293eb2b) 感谢 [@TabishB](https://github.com/TabishB)！ - ### Bug 修复
 
-  - Fixed incorrect archive path in onboarding documentation — the template now shows the correct path `openspec/changes/archive/YYYY-MM-DD-<name>/` instead of the incorrect `openspec/archive/YYYY-MM-DD--<name>/`
+  - 修复了 onboard 文档中不正确的归档路径 — 模板现在显示正确路径 `openspec/changes/archive/YYYY-MM-DD-<name>/` 而不是错误的 `openspec/archive/YYYY-MM-DD--<name>/`
 
 ## 1.0.0
 
-### Major Changes
+### 主要变更
 
-- [#578](https://github.com/Fission-AI/OpenSpec/pull/578) [`0cc9d90`](https://github.com/Fission-AI/OpenSpec/commit/0cc9d9025af367faa1688a7b2606a2549053cd3f) Thanks [@TabishB](https://github.com/TabishB)! - ## OpenSpec 1.0 — The OPSX Release
+- [#578](https://github.com/Fission-AI/OpenSpec/pull/578) [`0cc9d90`](https://github.com/Fission-AI/OpenSpec/commit/0cc9d9025af367faa1688a7b2606a2549053cd3f) 感谢 [@TabishB](https://github.com/TabishB)！ - ## OpenSpec 1.0 — OPSX 发布
 
-  The workflow has been rebuilt from the ground up. OPSX replaces the old phase-locked `/openspec:*` commands with an action-based system where AI understands what artifacts exist, what's ready to create, and what each action unlocks.
+  工作流从零开始重建。OPSX 用基于动作的系统取代了旧的阶段锁定 `/openspec:*` 命令，其中 AI 了解存在哪些 artifact、什么准备好创建，以及每个动作解锁了什么。
 
-  ### Breaking Changes
+  ### 破坏性变更
 
-  - **Old commands removed** — `/openspec:proposal`, `/openspec:apply`, and `/openspec:archive` no longer exist
-  - **Config files removed** — Tool-specific instruction files (`CLAUDE.md`, `.cursorrules`, `AGENTS.md`, `project.md`) are no longer generated
-  - **Migration** — Run `openspec init` to upgrade. Legacy artifacts are detected and cleaned up with confirmation.
+  - **旧命令已移除** — `/openspec:proposal`、`/openspec:apply` 和 `/openspec:archive` 不再存在
+  - **配置文件已移除** — 工具特定的指令文件（`CLAUDE.md`、`.cursorrules`、`AGENTS.md`、`project.md`）不再生成
+  - **迁移** — 运行 `openspec init` 升级。遗留 artifact 被检测到并在确认后清理。
 
-  ### From Static Prompts to Dynamic Instructions
+  ### 从静态提示到动态指令
 
-  **Before:** AI received the same static instructions every time, regardless of project state.
+  **之前：** AI 每次都收到相同的静态指令，无论项目状态如何。
 
-  **Now:** Instructions are dynamically assembled from three layers:
+  **现在：** 指令从三层动态组装：
 
-  1. **Context** — Project background from `config.yaml` (tech stack, conventions)
-  2. **Rules** — Artifact-specific constraints (e.g., "propose spike tasks for unknowns")
-  3. **Template** — The actual structure for the output file
+  1. **上下文** — 来自 `config.yaml` 的项目背景（技术栈、约定）
+  2. **规则** — Artifact 特定约束（例如，"为未知事物提出 spike 任务"）
+  3. **模板** — 输出文件的实际结构
 
-  AI queries the CLI for real-time state: which artifacts exist, what's ready to create, what dependencies are satisfied, and what each action unlocks.
+  AI 查询 CLI 以获取实时状态：存在哪些 artifact、什么准备好创建、满足哪些依赖、每个动作解锁什么。
 
-  ### From Phase-Locked to Action-Based
+  ### 从阶段锁定到基于动作
 
-  **Before:** Linear workflow — proposal → apply → archive. Couldn't easily go back or iterate.
+  **之前：** 线性工作流 — proposal → apply → archive。不能轻易返回或迭代。
 
-  **Now:** Flexible actions on a change. Edit any artifact anytime. The artifact graph tracks state automatically.
+  **现在：** 对变更的灵活动作。随时编辑任何 artifact。Artifact 图自动跟踪状态。
 
-  | Command              | What it does                                         |
+  | 命令 | 功能 |
   | -------------------- | ---------------------------------------------------- |
-  | `/opsx:explore`      | Think through ideas before committing to a change    |
-  | `/opsx:new`          | Start a new change                                   |
-  | `/opsx:continue`     | Create one artifact at a time (step-through)         |
-  | `/opsx:ff`           | Create all planning artifacts at once (fast-forward) |
-  | `/opsx:apply`        | Implement tasks                                      |
-  | `/opsx:verify`       | Validate implementation matches artifacts            |
-  | `/opsx:sync`         | Sync delta specs to main specs                       |
-  | `/opsx:archive`      | Archive completed change                             |
-  | `/opsx:bulk-archive` | Archive multiple changes with conflict detection     |
-  | `/opsx:onboard`      | Guided 15-minute walkthrough of complete workflow    |
+  | `/opsx:explore` | 在承诺变更之前思考想法 |
+  | `/opsx:new` | 开始一个新变更 |
+  | `/opsx:continue` | 一次创建一个 artifact（逐步） |
+  | `/opsx:ff` | 一次创建所有规划 artifact（快进） |
+  | `/opsx:apply` | 实现任务 |
+  | `/opsx:verify` | 验证实现匹配 artifact |
+  | `/opsx:sync` | 同步增量 specs 到主 specs |
+  | `/opsx:archive` | 归档已完成的变更 |
+  | `/opsx:bulk-archive` | 带冲突检测的批量归档多个变更 |
+  | `/opsx:onboard` | 完整工作流 15 分钟引导步行 |
 
-  ### From Text Merging to Semantic Spec Syncing
+  ### 从文本合并到语义 Spec 同步
 
-  **Before:** Spec updates required manual merging or wholesale file replacement.
+  **之前：** Spec 更新需要手动合并或整文件替换。
 
-  **Now:** Delta specs use semantic markers that AI understands:
+  **现在：** 增量 specs 使用 AI 理解的语义标记：
 
-  - `## ADDED Requirements` — New requirements to add
-  - `## MODIFIED Requirements` — Partial updates (add scenario without copying existing ones)
-  - `## REMOVED Requirements` — Delete with reason and migration notes
-  - `## RENAMED Requirements` — Rename preserving content
+  - `## ADDED Requirements` — 要添加的新需求
+  - `## MODIFIED Requirements` — 部分更新（添加场景而不复制现有场景）
+  - `## REMOVED Requirements` — 删除并提供原因和迁移说明
+  - `## RENAMED Requirements` — 重命名保留内容
 
-  Archive parses these at the requirement level, not brittle header matching.
+  归档在需求级别解析这些，而不是脆弱的标题匹配。
 
-  ### From Scattered Files to Agent Skills
+  ### 从分散文件到 Agent 技能
 
-  **Before:** 8+ config files at project root + slash commands scattered across 21 tool-specific locations with different formats.
+  **之前：** 项目根目录有 8+ 个配置文件 + 斜杠命令分散在 21 个工具特定位置，格式不同。
 
-  **Now:** Single `.claude/skills/` directory with YAML-fronted markdown files. Auto-detected by Claude Code, Cursor, Windsurf. Cross-editor compatible.
+  **现在：** 带有 YAML 前置的 markdown 文件的单一 `.claude/skills/` 目录。由 Claude Code、Cursor、Windsurf 自动检测。跨编辑器兼容。
 
-  ### New Features
+  ### 新功能
 
-  - **Onboarding skill** — `/opsx:onboard` walks new users through their first complete change with codebase-aware task suggestions and step-by-step narration (11 phases, ~15 minutes)
+  - **Onboarding 技能** — `/opsx:onboard` 为新用户引导他们完成第一个完整变更，包括基于代码库的任务建议和逐步叙述（11 个阶段，约 15 分钟）
 
-  - **21 AI tools supported** — Claude Code, Cursor, Windsurf, Continue, Gemini CLI, GitHub Copilot, Amazon Q, Cline, RooCode, Kilo Code, Auggie, CodeBuddy, Qoder, Qwen, CoStrict, Crush, Factory, OpenCode, Antigravity, iFlow, and Codex
+  - **21 个 AI 工具支持** — Claude Code、Cursor、Windsurf、Continue、Gemini CLI、GitHub Copilot、Amazon Q、Cline、RooCode、Kilo Code、Auggie、CodeBuddy、Qoder、Qwen、CoStrict、Crush、Factory、OpenCode、Antigravity、iFlow 和 Codex
 
-  - **Interactive setup** — `openspec init` shows animated welcome screen and searchable multi-select for choosing tools. Pre-selects already-configured tools for easy refresh.
+  - **交互式设置** — `openspec init` 显示动画欢迎屏幕和可搜索的多选以选择工具。预选已配置的工具以便轻松刷新。
 
-  - **Customizable schemas** — Define custom artifact workflows in `openspec/schemas/` without touching package code. Teams can share workflows via version control.
+  - **可自定义 schemas** — 在 `openspec/schemas/` 中定义自定义 artifact 工作流，无需触及包代码。团队可以通过版本控制共享工作流。
 
-  ### Bug Fixes
+  ### Bug 修复
 
-  - Fixed Claude Code YAML parsing failure when command names contained colons
-  - Fixed task file parsing to handle trailing whitespace on checkbox lines
-  - Fixed JSON instruction output to separate context/rules from template — AI was copying constraint blocks into artifact files
+  - 修复了当命令名称包含冒号时 Claude Code YAML 解析失败
+  - 修复了任务文件解析以处理复选框行上的尾随空格
+  - 修复了 JSON 指令输出以将 context/rules 与模板分离 — AI 正在将约束块复制到 artifact 文件中
 
-  ### Documentation
+  ### 文档
 
-  - New getting-started guide, CLI reference, concepts documentation
-  - Removed misleading "edit mid-flight and continue" claims that weren't implemented
-  - Added migration guide for upgrading from pre-OPSX versions
+  - 新的入门指南、CLI 参考、概念文档
+  - 删除了误导性的"飞行中编辑并继续"声明，这些并未实现
+  - 添加了从 pre-OPSX 版本升级的迁移指南
 
 ## 0.23.0
 
-### Minor Changes
+### 次要变更
 
-- [#540](https://github.com/Fission-AI/OpenSpec/pull/540) [`c4cfdc7`](https://github.com/Fission-AI/OpenSpec/commit/c4cfdc7c499daef30d8a218f5f59b8d9e5adb754) Thanks [@TabishB](https://github.com/TabishB)! - ### New Features
+- [#540](https://github.com/Fission-AI/OpenSpec/pull/540) [`c4cfdc7`](https://github.com/Fission-AI/OpenSpec/commit/c4cfdc7c499daef30d8a218f5f59b8d9e5adb754) 感谢 [@TabishB](https://github.com/TabishB)！ - ### 新功能
 
-  - **Bulk archive skill** — Archive multiple completed changes in a single operation with `/opsx:bulk-archive`. Includes batch validation, spec conflict detection, and consolidated confirmation
+  - **批量归档技能** — 使用 `/opsx:bulk-archive` 在一次操作中归档多个已完成的变更。包括批量验证、spec 冲突检测和合并确认
 
-  ### Other
+  ### 其他
 
-  - **Simplified setup** — Config creation now uses sensible defaults with helpful comments instead of interactive prompts
+  - **简化设置** — 配置创建现在使用带有用注释的有帮助默认值而不是交互式提示
 
 ## 0.22.0
 
-### Minor Changes
+### 次要变更
 
-- [#530](https://github.com/Fission-AI/OpenSpec/pull/530) [`33466b1`](https://github.com/Fission-AI/OpenSpec/commit/33466b1e2a6798bdd6d0e19149173585b0612e6f) Thanks [@TabishB](https://github.com/TabishB)! - Add project-level configuration, project-local schemas, and schema management commands
+- [#530](https://github.com/Fission-AI/OpenSpec/pull/530) [`33466b1`](https://github.com/Fission-AI/OpenSpec/commit/33466b1e2a6798bdd6d0e19149173585b0612e6f) 感谢 [@TabishB](https://github.com/TabishB)！ - 添加项目级配置、项目本地 schemas 和 schema 管理命令
 
-  **New Features**
+  **新功能**
 
-  - **Project-level configuration** — Configure OpenSpec behavior per-project via `openspec/config.yaml`, including custom rules injection, context files, and schema resolution settings
-  - **Project-local schemas** — Define custom artifact schemas within your project's `openspec/schemas/` directory for project-specific workflows
-  - **Schema management commands** — New `openspec schema` commands (`list`, `show`, `export`, `validate`) for inspecting and managing artifact schemas (experimental)
+  - **项目级配置** — 通过 `openspec/config.yaml` 配置每个项目的 OpenSpec 行为，包括自定义规则注入、上下文文件和 schema 解析设置
+  - **项目本地 schemas** — 在项目的 `openspec/schemas/` 目录中定义自定义 artifact schemas 以用于项目特定工作流
+  - **Schema 管理命令** — 新的 `openspec schema` 命令（`list`、`show`、`export`、`validate`）用于检查和管理 artifact schemas（实验性）
 
-  **Bug Fixes**
+  **Bug 修复**
 
-  - Fixed config loading to handle null `rules` field in project configuration
+  - 修复了配置加载以处理项目配置中 null `rules` 字段
 
 ## 0.21.0
 
-### Minor Changes
+### 次要变更
 
-- [#516](https://github.com/Fission-AI/OpenSpec/pull/516) [`b5a8847`](https://github.com/Fission-AI/OpenSpec/commit/b5a884748be6156a7bb140b4941cfec4f20a9fc8) Thanks [@TabishB](https://github.com/TabishB)! - Add feedback command and Nix flake support
+- [#516](https://github.com/Fission-AI/OpenSpec/pull/516) [`b5a8847`](https://github.com/Fission-AI/OpenSpec/commit/b5a884748be6156a7bb140b4941cfec4f20a9fc8) 感谢 [@TabishB](https://github.com/TabishB)！ - 添加反馈命令和 Nix flake 支持
 
-  **New Features**
+  **新功能**
 
-  - **Feedback command** — Submit feedback directly from the CLI with `openspec feedback`, which creates GitHub Issues with automatic metadata inclusion and graceful fallback for manual submission
-  - **Nix flake support** — Install and develop openspec using Nix with the new `flake.nix`, including automated flake maintenance and CI validation
+  - **反馈命令** — 直接从 CLI 提交反馈 `openspec feedback`，创建带自动元数据包含的 GitHub Issues，并在手动提交时优雅降级
+  - **Nix flake 支持** — 使用新的 `flake.nix` 安装和开发 openspec，包括自动 flake 维护和 CI 验证
 
-  **Bug Fixes**
+  **Bug 修复**
 
-  - **Explore mode guardrails** — Explore mode now explicitly prevents implementation, keeping the focus on thinking and discovery while still allowing artifact creation
+  - **探索模式保护** — 探索模式现在明确阻止实现，保持思考和发现的焦点，同时仍允许 artifact 创建
 
-  **Other**
+  **其他**
 
-  - Improved change inference in `opsx apply` — automatically detects the target change from conversation context or prompts when ambiguous
-  - Streamlined archive sync assessment with clearer delta spec location guidance
+  - 改进了 `opsx apply` 中的变更推断 — 在模糊时从对话上下文自动检测目标变更或提示
+  - 简化了归档同步评估，具有更清晰的增量 spec 位置指导
 
 ## 0.20.0
 
-### Minor Changes
+### 次要变更
 
-- [#502](https://github.com/Fission-AI/OpenSpec/pull/502) [`9db74aa`](https://github.com/Fission-AI/OpenSpec/commit/9db74aa5ac6547efadaed795217cfa17444f2004) Thanks [@TabishB](https://github.com/TabishB)! - Add `/opsx:verify` command and fix vitest process storms
+- [#502](https://github.com/Fission-AI/OpenSpec/pull/502) [`9db74aa`](https://github.com/Fission-AI/OpenSpec/commit/9db74aa5ac6547efadaed795217cfa17444f2004) 感谢 [@TabishB](https://github.com/TabishB)！ - 添加 `/opsx:verify` 命令并修复 vitest 进程风暴
 
-  **New Features**
+  **新功能**
 
-  - **`/opsx:verify` command** — Validate that change implementations match their specifications
+  - **`/opsx:verify` 命令** — 验证变更实现是否匹配其规格
 
-  **Bug Fixes**
+  **Bug 修复**
 
-  - Fixed vitest process storms by capping worker parallelism
-  - Fixed agent workflows to use non-interactive mode for validation commands
-  - Fixed PowerShell completions generator to remove trailing commas
+  - 通过限制 worker 并行性修复了 vitest 进程风暴
+  - 修复了 agent 工作流以对验证命令使用非交互模式
+  - 修复了 PowerShell 补全生成器以删除尾随逗号
 
 ## 0.19.0
 
-### Minor Changes
+### 次要变更
 
-- eb152eb: Add Continue IDE support, shell completions, and `/opsx:explore` command
+- eb152eb: 添加 Continue IDE 支持、shell 补全和 `/opsx:explore` 命令
 
-  **New Features**
+  **新功能**
 
-  - **Continue IDE support** – OpenSpec now generates slash commands for [Continue](https://continue.dev/), expanding editor integration options alongside Cursor, Windsurf, Claude Code, and others
-  - **Shell completions for Bash, Fish, and PowerShell** – Run `openspec completion install` to set up tab completion in your preferred shell
-  - **`/opsx:explore` command** – A new thinking partner mode for exploring ideas and investigating problems before committing to changes
-  - **Codebuddy slash command improvements** – Updated frontmatter format for better compatibility
+  - **Continue IDE 支持** – OpenSpec 现在为 [Continue](https://continue.dev/) 生成斜杠命令，扩展了与 Cursor、Windsurf、Claude Code 等一起的编辑器集成选项
+  - **Bash、Fish 和 PowerShell 的 Shell 补全** – 运行 `openspec completion install` 在你喜欢的 shell 中设置制表符补全
+  - **`/opsx:explore` 命令** – 一个新的思考伙伴模式，用于在承诺变更之前探索想法和研究问题
+  - **Codebuddy 斜杠命令改进** – 更新了 frontmatter 格式以提高兼容性
 
-  **Bug Fixes**
+  **Bug 修复**
 
-  - Shell completions now correctly offer parent-level flags (like `--help`) when a command has subcommands
-  - Fixed Windows compatibility issues in tests
+  - Shell 补全现在在命令有子命令时正确提供父级标志（如 `--help`）
+  - 修复了 Windows 兼容性问题
 
-  **Other**
+  **其他**
 
-  - Added optional anonymous usage statistics to help understand how OpenSpec is used. This is **opt-out** by default – set `OPENSPEC_TELEMETRY=0` or `DO_NOT_TRACK=1` to disable. Only command names and version are collected; no arguments, file paths, or content. Automatically disabled in CI environments.
+  - 添加了可选的匿名使用统计以帮助了解 OpenSpec 的使用方式。这是**默认选择退出** – 设置 `OPENSPEC_TELEMETRY=0` 或 `DO_NOT_TRACK=1` 禁用。仅收集命令名称和版本；不收集参数、文件路径或内容。在 CI 环境中自动禁用。
 
 ## 0.18.0
 
-### Minor Changes
+### 次要变更
 
-- 8dfd824: Add OPSX experimental workflow commands and enhanced artifact system
+- 8dfd824: 添加 OPSX 实验性工作流命令和增强的 artifact 系统
 
-  **New Commands:**
+  **新命令：**
 
-  - `/opsx:ff` - Fast-forward through artifact creation, generating all needed artifacts in one go
-  - `/opsx:sync` - Sync delta specs from a change to main specs
-  - `/opsx:archive` - Archive completed changes with smart sync check
+  - `/opsx:ff` - 快进通过 artifact 创建，一次生成所有需要的 artifact
+  - `/opsx:sync` - 将变更的增量 specs 同步到主 specs
+  - `/opsx:archive` - 带智能同步检查归档已完成的变更
 
-  **Artifact Workflow Enhancements:**
+  **Artifact 工作流增强：**
 
-  - Schema-aware apply instructions with inline guidance and XML output
-  - Agent schema selection for experimental artifact workflow
-  - Per-change schema metadata via `.openspec.yaml` files
-  - Agent Skills for experimental artifact workflow
-  - Instruction loader for template loading and change context
-  - Restructured schemas as directories with templates
+  - 带内联指导和 XML 输出的 schema 感知应用指令
+  - 实验性 artifact 工作流的 agent schema 选择
+  - 通过 `.openspec.yaml` 文件进行每变更 schema 元数据
+  - Agent 技能用于实验性 artifact 工作流
+  - 用于模板加载和变更上下文的指令加载器
+  - 重构 schemas 为带有模板的目录
 
-  **Improvements:**
+  **改进：**
 
-  - Enhanced list command with last modified timestamps and sorting
-  - Change creation utilities for better workflow support
+  - 增强的列表命令，带最后修改时间戳和排序
+  - 更好的变更创建实用程序以支持工作流
 
-  **Fixes:**
+  **修复：**
 
-  - Normalize paths for cross-platform glob compatibility
-  - Allow REMOVED requirements when creating new spec files
+  - 规范化路径以实现跨平台 glob 兼容性
+  - 在创建新 spec 文件时允许 REMOVED 需求
 
 ## 0.17.2
 
-### Patch Changes
+### 补丁变更
 
-- 455c65f: Fix `--no-interactive` flag in validate command to properly disable spinner, preventing hangs in pre-commit hooks and CI environments
+- 455c65f: 修复 `--no-interactive` 标志在 validate 命令中正确禁用微调器，防止在 pre-commit hooks 和 CI 环境中挂起
 
 ## 0.17.1
 
-### Patch Changes
+### 补丁变更
 
-- a2757e7: Fix pre-commit hook hang issue in config command by using dynamic import for @inquirer/prompts
+- a2757e7: 修复 config 命令中的 pre-commit hook 挂起问题，使用 @inquirer/prompts 的动态导入
 
-  The config command was causing pre-commit hooks to hang indefinitely due to stdin event listeners being registered at module load time. This fix converts the static import to a dynamic import that only loads inquirer when the `config reset` command is actually used interactively.
+  config 命令导致 pre-commit hooks 由于在模块加载时注册了 stdin 事件监听器而无限挂起。此修复将静态导入转换为动态导入，仅在实际使用 `config reset` 命令时加载 inquirer。
 
-  Also adds ESLint with a rule to prevent static @inquirer imports, avoiding future regressions.
+  还添加了 ESLint 规则以防止静态 @inquirer 导入，避免未来回归。
 
 ## 0.17.0
 
-### Minor Changes
+### 次要变更
 
-- 2e71835: Add `openspec config` command and Oh-my-zsh completions
+- 2e71835: 添加 `openspec config` 命令和 Oh-my-zsh 补全
 
-  **New Features**
+  **新功能**
 
-  - Add `openspec config` command for managing global configuration settings
-  - Implement global config directory with XDG Base Directory specification support
-  - Add Oh-my-zsh shell completions support for enhanced CLI experience
+  - 添加 `openspec config` 命令用于管理全局配置设置
+  - 实现带 XDG Base Directory 规范支持的全局配置目录
+  - 添加 Oh-my-zsh shell 补全支持以增强 CLI 体验
 
-  **Bug Fixes**
+  **Bug 修复**
 
-  - Fix hang in pre-commit hooks by using dynamic imports
-  - Respect XDG_CONFIG_HOME environment variable on all platforms
-  - Resolve Windows compatibility issues in zsh-installer tests
-  - Align cli-completion spec with implementation
-  - Remove hardcoded agent field from slash commands
+  - 使用动态导入修复 pre-commit hooks 挂起
+  - 在所有平台上尊重 XDG_CONFIG_HOME 环境变量
+  - 解决 zsh-installer 测试中的 Windows 兼容性问题
+  - 使 cli-completion spec 与实现保持一致
+  - 从斜杠命令中移除硬编码的 agent 字段
 
-  **Documentation**
+  **文档**
 
-  - Alphabetize AI tools list in README and make it collapsible
+  - 在 README 中按字母顺序排列 AI 工具列表并使其可折叠
 
 ## 0.16.0
 
-### Minor Changes
+### 次要变更
 
-- c08fbc1: Add new AI tool integrations and enhancements:
+- c08fbc1: 添加新的 AI 工具集成和增强：
 
-  - **feat(iflow-cli)**: Add iFlow-cli integration with slash command support and documentation
-  - **feat(init)**: Add IDE restart instruction after init to inform users about slash command availability
-    **feat(antigravity)**: Add Antigravity slash command support
-  - **fix**: Generate TOML commands for Qwen Code (fixes #293)
-  - Clarify scaffold proposal documentation and enhance proposal guidelines
-  - Update proposal guidelines to emphasize design-first approach before implementation
+  - **feat(iflow-cli)**: 添加 iFlow-cli 集成与斜杠命令支持和文档
+  - **feat(init)**: 添加 IDE 重启指令在 init 后通知用户斜杠命令可用性
+  - **feat(antigravity)**: 添加 Antigravity 斜杠命令支持
+  - **fix**: 为 Qwen Code 生成 TOML 命令（修复 #293）
+  - 澄清了脚手架提案文档并增强了提案指南
+  - 更新提案指南以强调设计优先方法在实现之前
 
-## Unreleased
+## 未发布
 
-### Minor Changes
+### 次要变更
 
-- Add Continue slash command support so `openspec init` can generate `.continue/prompts/openspec-*.prompt` files with MARKDOWN frontmatter and `$ARGUMENTS` placeholder, and refresh them on `openspec update`.
+- 添加 Continue 斜杠命令支持，以便 `openspec init` 可以生成 `.continue/prompts/openspec-*.prompt` 文件，带 MARKDOWN frontmatter 和 `$ARGUMENTS` 占位符，并在 `openspec update` 时刷新它们。
 
-- Add Antigravity slash command support so `openspec init` can generate `.agent/workflows/openspec-*.md` files with description-only frontmatter and `openspec update` refreshes existing workflows alongside Windsurf.
+- 添加 Antigravity 斜杠命令支持，以便 `openspec init` 可以生成 `.agent/workflows/openspec-*.md` 文件，带仅 description 的 frontmatter，并在 `openspec update` 时与 Windsurf 一起刷新现有 workflows。
 
 ## 0.15.0
 
-### Minor Changes
+### 次要变更
 
-- 4758c5c: Add support for new AI tools with native slash command integration
+- 4758c5c: 添加具有原生斜杠命令集成的新 AI 工具支持
 
-  - **Gemini CLI**: Add native TOML-based slash command support for Gemini CLI with `.gemini/commands/openspec/` integration
-  - **RooCode**: Add RooCode integration with configurator, slash commands, and templates
-  - **Cline**: Fix Cline to use workflows instead of rules for slash commands (`.clinerules/workflows/` paths)
-  - **Documentation**: Update documentation to reflect new integrations and workflow changes
+  - **Gemini CLI**: 为 Gemini CLI 添加原生基于 TOML 的斜杠命令支持，带 `.gemini/commands/openspec/` 集成
+  - **RooCode**: 添加 RooCode 集成与配置器、斜杠命令和模板
+  - **Cline**: 修复 Cline 以使用 workflows 而不是 rules 来获取斜杠命令（`.clinerules/workflows/` 路径）
+  - **文档**: 更新文档以反映新的集成和工作流变更
 
 ## 0.14.0
 
-### Minor Changes
+### 次要变更
 
-- 8386b91: Add support for new AI assistants and configuration improvements
+- 8386b91: 添加新的 AI 助手支持和配置改进
 
-  - feat: add Qwen Code support with slash command integration
-  - feat: add $ARGUMENTS support to apply slash command for dynamic variable passing
-  - feat: add Qoder CLI support to configuration and documentation
-  - feat: add CoStrict AI assistant support
-  - fix: recreate missing openspec template files in extend mode
-  - fix: prevent false 'already configured' detection for tools
-  - fix: use change-id as fallback title instead of "Untitled Change"
-  - docs: add guidance for populating project-level context
-  - docs: add Crush to supported AI tools in README
+  - feat: 添加 Qwen Code 支持与斜杠命令集成
+  - feat: 添加 $ARGUMENTS 支持到 apply 斜杠命令以进行动态变量传递
+  - feat: 添加 Qoder CLI 支持到配置和文档
+  - feat: 添加 CoStrict AI 助手支持
+  - fix: 在扩展模式下重新创建缺失的 openspec 模板文件
+  - fix: 防止工具的误报'已配置'检测
+  - fix: 使用 change-id 作为回退标题而不是"无标题变更"
+  - docs: 添加填充项目级上下文的指导
+  - docs: 在 README 中添加 Crush 到支持的 AI 工具
 
 ## 0.13.0
 
-### Minor Changes
+### 次要变更
 
-- 668a125: Add support for multiple AI assistants and improve validation
+- 668a125: 添加多个 AI 助手支持并改进验证
 
-  This release adds support for several new AI coding assistants:
+  此版本添加了对多个新 AI 编码助手的支持：
 
-  - CodeBuddy Code - AI-powered coding assistant
-  - CodeRabbit - AI code review assistant
-  - Cline - Claude-powered CLI assistant
-  - Crush AI - AI assistant platform
-  - Auggie (Augment CLI) - Code augmentation tool
+  - CodeBuddy Code - AI 驱动的编码助手
+  - CodeRabbit - AI 代码审查助手
+  - Cline - Claude 驱动的 CLI 助手
+  - Crush AI - AI 助手平台
+  - Auggie (Augment CLI) - 代码增强工具
 
-  New features:
+  新功能：
 
-  - Archive slash command now supports arguments for more flexible workflows
+  - 归档斜杠命令现在支持参数以获得更灵活的工作流
 
-  Bug fixes:
+  Bug 修复：
 
-  - Delta spec validation now handles case-insensitive headers and properly detects empty sections
-  - Archive validation now correctly honors --no-validate flag and ignores metadata
+  - 增量 spec 验证现在处理不区分大小写的标题并正确检测空部分
+  - 归档验证现在正确地遵守 --no-validate 标志并忽略元数据
 
-  Documentation improvements:
+  文档改进：
 
-  - Added VS Code dev container configuration for easier development setup
-  - Updated AGENTS.md with explicit change-id notation
-  - Enhanced slash commands documentation with restart notes
+  - 添加了 VS Code dev 容器配置以便更轻松地开发设置
+  - 使用明确的 change-id 符号更新了 AGENTS.md
+  - 增强了斜杠命令文档并添加了重启说明
 
 ## 0.12.0
 
-### Minor Changes
+### 次要变更
 
-- 082abb4: Add factory function support for slash commands and non-interactive init options
+- 082abb4: 为斜杠命令添加工厂函数支持和非交互式 init 选项
 
-  This release includes two new features:
+  此版本包含两个新功能：
 
-  - **Factory function support for slash commands**: Slash commands can now be defined as functions that return command objects, enabling dynamic command configuration
-  - **Non-interactive init options**: Added `--tools`, `--all-tools`, and `--skip-tools` CLI flags to `openspec init` for automated initialization in CI/CD pipelines while maintaining backward compatibility with interactive mode
+  - **斜杠命令的工厂函数支持**：斜杠命令现在可以定义为返回命令对象的函数，支持动态命令配置
+  - **非交互式 init 选项**：添加了 `--tools`、`--all-tools` 和 `--skip-tools` CLI 标志到 `openspec init`，用于在 CI/CD 管道中自动初始化，同时保持与交互模式的向后兼容
 
 ## 0.11.0
 
-### Minor Changes
+### 次要变更
 
-- 312e1d6: Add Amazon Q Developer CLI integration. OpenSpec now supports Amazon Q Developer with automatic prompt generation in `.amazonq/prompts/` directory, allowing you to use OpenSpec slash commands with Amazon Q's @-syntax.
+- 312e1d6: 添加 Amazon Q Developer CLI 集成。OpenSpec 现在支持 Amazon Q Developer，在 `.amazonq/prompts/` 目录中自动生成 prompt，允许你在 Amazon Q 的 @-语法中使用 OpenSpec 斜杠命令。
 
 ## 0.10.0
 
-### Minor Changes
+### 次要变更
 
-- d7e0ce8: Improve init wizard Enter key behavior to allow proceeding through prompts more naturally
+- d7e0ce8: 改进 init 向导 Enter 键行为以允许更自然地通过提示继续
 
 ## 0.9.2
 
-### Patch Changes
+### 补丁变更
 
-- 2ae0484: Fix cross-platform path handling issues. This release includes fixes for joinPath behavior and slash command path resolution to ensure OpenSpec works correctly across all platforms.
+- 2ae0484: 修复跨平台路径处理问题。此版本包括修复 joinPath 行为和斜杠命令路径解析，以确保 OpenSpec 在所有平台上正确工作。
 
 ## 0.9.1
 
-### Patch Changes
+### 补丁变更
 
-- 8210970: Fix OpenSpec not working on Windows when Codex integration is selected. This release includes fixes for cross-platform path handling and normalization to ensure OpenSpec works correctly on Windows systems.
+- 8210970: 修复当选择 Codex 集成时 OpenSpec 在 Windows 上不工作的问题。此版本包括跨平台路径处理和规范化的修复，以确保 OpenSpec 在 Windows 系统上正确工作。
 
 ## 0.9.0
 
-### Minor Changes
+### 次要变更
 
-- efbbf3b: Add support for Codex and GitHub Copilot slash commands with YAML frontmatter and $ARGUMENTS
+- efbbf3b: 添加 Codex 和 GitHub Copilot 斜杠命令支持与 YAML frontmatter 和 $ARGUMENTS
 
-## Unreleased
+## 未发布
 
-### Minor Changes
+### 次要变更
 
-- Add GitHub Copilot slash command support. OpenSpec now writes prompts to `.github/prompts/openspec-{proposal,apply,archive}.prompt.md` with YAML frontmatter and `$ARGUMENTS` placeholder, and refreshes them on `openspec update`.
+- 添加 GitHub Copilot 斜杠命令支持。OpenSpec 现在将 prompts 写入 `.github/prompts/openspec-{proposal,apply,archive}.prompt.md`，带 YAML frontmatter 和 `$ARGUMENTS` 占位符，并在 `openspec update` 时刷新它们。
 
 ## 0.8.1
 
-### Patch Changes
+### 补丁变更
 
-- d070d08: Fix CLI version mismatch and add a release guard that validates the packed tarball prints the same version as package.json via `openspec --version`.
+- d070d08: 修复 CLI 版本不匹配并添加发布保护，验证打包的 tarball 打印与 package.json 相同的版本 via `openspec --version`。
 
 ## 0.8.0
 
-### Minor Changes
+### 次要变更
 
-- c29b06d: Add Windsurf support.
-- Add Codex slash command support. OpenSpec now writes prompts directly to Codex's global directory (`~/.codex/prompts` or `$CODEX_HOME/prompts`) and refreshes them on `openspec update`.
+- c29b06d: 添加 Windsurf 支持。
+- 添加 Codex 斜杠命令支持。OpenSpec 现在直接将 prompts 写入 Codex 的全局目录（`~/.codex/prompts` 或 `$CODEX_HOME/prompts`），并在 `openspec update` 时刷新它们。
 
 ## 0.7.0
 
-### Minor Changes
+### 次要变更
 
-- Add native Kilo Code workflow integration so `openspec init` and `openspec update` manage `.kilocode/workflows/openspec-*.md` files.
-- Always scaffold the managed root `AGENTS.md` hand-off stub and regroup the AI tool prompts during init/update to keep instructions consistent.
+- 添加原生 Kilo Code 工作流集成，以便 `openspec init` 和 `openspec update` 管理 `.kilocode/workflows/openspec-*.md` 文件。
+- 在 init/update 期间始终将托管根 `AGENTS.md` 手握存根脚手架，并重新组合 AI 工具 prompts 以保持指令一致。
 
 ## 0.6.0
 
-### Minor Changes
+### 次要变更
 
-- Slim the generated root agent instructions down to a managed hand-off stub and update the init/update flows to refresh it safely.
+- 将生成的根 agent 指令精简为托管手握存根，并更新 init/update 流程以安全地刷新它。
 
 ## 0.5.0
 
-### Minor Changes
+### 次要变更
 
-- feat: implement Phase 1 E2E testing with cross-platform CI matrix
+- feat: 使用跨平台 CI 矩阵实现阶段 1 E2E 测试
 
-  - Add shared runCLI helper in test/helpers/run-cli.ts for spawn testing
-  - Create test/cli-e2e/basic.test.ts covering help, version, validate flows
-  - Migrate existing CLI exec tests to use runCLI helper
-  - Extend CI matrix to bash (Linux/macOS) and pwsh (Windows)
-  - Split PR and main workflows for optimized feedback
+  - 在 test/helpers/run-cli.ts 中添加共享 runCLI 帮助程序用于生成测试
+  - 创建 test/cli-e2e/basic.test.ts 覆盖 help、version、validate 流程
+  - 迁移现有 CLI exec 测试以使用 runCLI 帮助程序
+  - 扩展 CI 矩阵到 bash（Linux/macOS）和 pwsh（Windows）
+  - 拆分 PR 和 main 工作流以优化反馈
 
-### Patch Changes
+### 补丁变更
 
-- Make apply instructions more specific
+- 使应用指令更具体
 
-  Improve agent templates and slash command templates with more specific and actionable apply instructions.
+  改进 agent 模板和斜杠命令模板，带更具体和可操作的应用指令。
 
-- docs: improve documentation and cleanup
+- docs: 改进文档和清理
 
-  - Document non-interactive flag for archive command
-  - Replace discord badge in README
-  - Archive completed changes for better organization
+  - 记录归档命令的非交互式标志
+  - 替换 README 中的 discord 徽章
+  - 归档已完成的变更以便更好地组织
 
 ## 0.4.0
 
-### Minor Changes
+### 次要变更
 
-- Add OpenSpec change proposals for CLI improvements and enhanced user experience
-- Add Opencode slash commands support for AI-driven development workflows
+- 添加 OpenSpec 变更提案用于 CLI 改进和增强用户体验
+- 添加 Opencode 斜杠命令支持用于 AI 驱动的开发工作流
 
-### Patch Changes
+### 补丁变更
 
-- Add documentation improvements including --yes flag for archive command template and Discord badge
-- Fix normalize line endings in markdown parser to handle CRLF files properly
+- 添加文档改进，包括归档命令模板的 --yes 标志和 Discord 徽章
+- 修复 markdown 解析器中的规范化行尾以正确处理 CRLF 文件
 
 ## 0.3.0
 
-### Minor Changes
+### 次要变更
 
-- Enhance `openspec init` with extend mode, multi-tool selection, and an interactive `AGENTS.md` configurator.
+- 使用扩展模式、多工具选择和交互式 `AGENTS.md` 配置器增强 `openspec init`。
 
 ## 0.2.0
 
-### Minor Changes
+### 次要变更
 
-- ce5cead: - Add an `openspec view` dashboard that rolls up spec counts and change progress at a glance
-  - Generate and update AI slash commands alongside the renamed `openspec/AGENTS.md` instructions file
-  - Remove the deprecated `openspec diff` command and direct users to `openspec show`
+- ce5cead: - 添加一个 `openspec view` 仪表盘，一目了然地汇总 spec 计数和变更进度
+  - 在重命名期间生成和更新 AI 斜杠命令以及重命名的 `openspec/AGENTS.md` 指令文件
+  - 删除弃用的 `openspec diff` 命令并引导用户使用 `openspec show`
 
 ## 0.1.0
 
-### Minor Changes
+### 次要变更
 
-- 24b4866: Initial release
+- 24b4866: 初始版本

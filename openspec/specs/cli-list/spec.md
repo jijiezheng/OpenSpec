@@ -1,103 +1,113 @@
-# List Command Specification
+# 列表命令规范
 
-## Purpose
+## 目的
 
-The `openspec list` command SHALL provide developers with a quick overview of all active changes in the project, showing their names and task completion status.
-## Requirements
-### Requirement: Command Execution
-The command SHALL scan and analyze either active changes or specs based on the selected mode.
+`openspec list` 命令应向开发人员提供项目中所有活动变更的快速概览，显示其名称和任务完成状态。
 
-#### Scenario: Scanning for changes (default)
-- **WHEN** `openspec list` is executed without flags
-- **THEN** scan the `openspec/changes/` directory for change directories
-- **AND** exclude the `archive/` subdirectory from results
-- **AND** parse each change's `tasks.md` file to count task completion
+## 需求
 
-#### Scenario: Scanning for specs
-- **WHEN** `openspec list --specs` is executed
-- **THEN** scan the `openspec/specs/` directory for capabilities
-- **AND** read each capability's `spec.md`
-- **AND** parse requirements to compute requirement counts
+### 需求：命令执行
+命令应根据所选模式扫描和分析活动变更或规格。
 
-### Requirement: Task Counting
+#### 场景：扫描变更（默认）
 
-The command SHALL accurately count task completion status using standard markdown checkbox patterns.
+- **当** 执行 `openspec list` 且不带标志时
+- **那么** 扫描 `openspec/changes/` 目录中的变更目录
+- **并且** 从结果中排除 `archive/` 子目录
+- **并且** 解析每个变更的 `tasks.md` 文件以计算任务完成情况
 
-#### Scenario: Counting tasks in tasks.md
+#### 场景：扫描规格
 
-- **WHEN** parsing a `tasks.md` file
-- **THEN** count tasks matching these patterns:
-  - Completed: Lines containing `- [x]`
-  - Incomplete: Lines containing `- [ ]`
-- **AND** calculate total tasks as the sum of completed and incomplete
+- **当** 执行 `openspec list --specs` 时
+- **那么** 扫描 `openspec/specs/` 目录中的规格
+- **并且** 读取每个规格的 `spec.md`
+- **并且** 解析需求以计算需求数量
 
-### Requirement: Output Format
-The command SHALL display items in a clear, readable table format with mode-appropriate progress or counts.
+### 需求：任务计数
 
-#### Scenario: Displaying change list (default)
-- **WHEN** displaying the list of changes
-- **THEN** show a table with columns:
-  - Change name (directory name)
-  - Task progress (e.g., "3/5 tasks" or "✓ Complete")
+命令应使用标准 markdown 复选框模式准确计算任务完成状态。
 
-#### Scenario: Displaying spec list
-- **WHEN** displaying the list of specs
-- **THEN** show a table with columns:
-  - Spec id (directory name)
-  - Requirement count (e.g., "requirements 12")
+#### 场景：计算 tasks.md 中的任务
 
-### Requirement: Flags
-The command SHALL accept flags to select the noun being listed.
+- **当** 解析 `tasks.md` 文件时
+- **那么** 计算匹配以下模式的任務：
+  - 已完成：包含 `- [x]` 的行
+  - 未完成：包含 `- [ ]` 的行
+- **并且** 将已完成和未完成的任务数相加计算总任务数
 
-#### Scenario: Selecting specs
-- **WHEN** `--specs` is provided
-- **THEN** list specs instead of changes
+### 需求：输出格式
+命令应以清晰的、可读的表格格式显示项目，并显示适合模式的进度或计数。
 
-#### Scenario: Selecting changes
-- **WHEN** `--changes` is provided
-- **THEN** list changes explicitly (same as default behavior)
+#### 场景：显示变更列表（默认）
 
-### Requirement: Empty State
-The command SHALL provide clear feedback when no items are present for the selected mode.
+- **当** 显示变更列表时
+- **那么** 显示具有以下列的表格：
+  - 变更名称（目录名称）
+  - 任务进度（例如 "3/5 tasks" 或 "✓ Complete"）
 
-#### Scenario: Handling empty state (changes)
-- **WHEN** no active changes exist (only archive/ or empty changes/)
-- **THEN** display: "No active changes found."
+#### 场景：显示规格列表
 
-#### Scenario: Handling empty state (specs)
-- **WHEN** no specs directory exists or contains no capabilities
-- **THEN** display: "No specs found."
+- **当** 显示规格列表时
+- **那么** 显示具有以下列的表格：
+  - 规格 ID（目录名称）
+  - 需求数量（例如 "requirements 12"）
 
-### Requirement: Error Handling
+### 需求：标志
+命令应接受标志以选择要列出的名词。
 
-The command SHALL gracefully handle missing files and directories with appropriate messages.
+#### 场景：选择规格
 
-#### Scenario: Missing tasks.md file
+- **当** 提供 `--specs` 时
+- **那么** 列出规格而不是变更
 
-- **WHEN** a change directory has no `tasks.md` file
-- **THEN** display the change with "No tasks" status
+#### 场景：选择变更
 
-#### Scenario: Missing changes directory
+- **当** 提供 `--changes` 时
+- **那么** 显式列出变更（与默认行为相同）
 
-- **WHEN** `openspec/changes/` directory doesn't exist
-- **THEN** display error: "No OpenSpec changes directory found. Run 'openspec init' first."
-- **AND** exit with code 1
+### 需求：空状态
+命令应为所选模式没有项目时提供清晰的反馈。
 
-### Requirement: Sorting
+#### 场景：处理空状态（变更）
 
-The command SHALL maintain consistent ordering of changes for predictable output.
+- **当** 不存在活动变更（仅 archive/ 或空的 changes/）时
+- **那么** 显示："No active changes found."
 
-#### Scenario: Ordering changes
+#### 场景：处理空状态（规格）
 
-- **WHEN** displaying multiple changes
-- **THEN** sort them in alphabetical order by change name
+- **当** specs 目录不存在或不包含规格时
+- **那么** 显示："No specs found."
 
-## Why
+### 需求：错误处理
 
-Developers need a quick way to:
-- See what changes are in progress
-- Identify which changes are ready to archive
-- Understand the overall project evolution status
-- Get a bird's-eye view without opening multiple files
+命令应以适当的消息优雅地处理缺失的文件和目录。
 
-This command provides that visibility with minimal effort, following OpenSpec's philosophy of simplicity and clarity.
+#### 场景：缺少 tasks.md 文件
+
+- **当** 变更目录没有 `tasks.md` 文件时
+- **那么** 显示状态为"No tasks"的变更
+
+#### 场景：缺少 changes 目录
+
+- **当** `openspec/changes/` 目录不存在时
+- **那么** 显示错误："No OpenSpec changes directory found. Run 'openspec init' first."
+- **并且** 以代码 1 退出
+
+### 需求：排序
+
+命令应为可预测的输出维护一致的变更顺序。
+
+#### 场景：对变更进行排序
+
+- **当** 显示多个变更时
+- **那么** 按变更名称的字母顺序排序
+
+## 为什么
+
+开发人员需要一种快速的方法来：
+- 查看正在进行的变更
+- 识别哪些变更已准备好归档
+- 了解整体项目演进状态
+- 无需打开多个文件即可获得鸟瞰图
+
+此命令以最小的努力提供这种可见性，遵循 OpenSpec 的简单性和清晰性理念。

@@ -1,98 +1,98 @@
-# OpenSpec Parallel Delta Remediation Plan
+# OpenSpec 并行增量修复计划
 
-## Problem Summary
-- Active changes apply requirement-level replacements when archiving. When two changes touch the same requirement, the second archive overwrites the first and silently drops scenarios (e.g., Windsurf vs. Kilo Code slash command updates).
-- The archive workflow (`src/core/archive.ts:191` and `src/core/archive.ts:501`) rebuilds main specs by replacing entire requirement blocks with the content contained in the change delta. The delta format (`src/core/parsers/requirement-blocks.ts:113`) has no notion of base versions or scenario-level operations.
-- The tooling cannot detect divergence between the change author’s starting point and the live spec, so parallel development corrupts the source of truth without warning.
+## 问题概述
+- 活动变更在归档时会应用需求级别的替换。当两个变更修改了同一个需求时，第二次归档会覆盖第一次并静默丢弃场景（例如 Windsurf vs. Kilo Code 的斜杠命令更新）。
+- 归档工作流（`src/core/archive.ts:191` 和 `src/core/archive.ts:501`）通过用变更增量中的内容替换整个需求块来重建主规格。增量格式（`src/core/parsers/requirement-blocks.ts:113`）没有基准版本或场景级操作的概念。
+- 该工具无法检测变更作者的起点与实际规格之间的分歧，因此并行开发会在不发出警告的情况下破坏数据源。
 
-## Observed Failure Mode
-- Change A (`add-windsurf-workflows`) adds a Windsurf scenario under `Slash Command Configuration`.
-- Change B (`add-kilocode-workflows`) adds a Kilo Code scenario to the same requirement, starting from the pre-Windsurf spec.
-- After Change A archives, the main spec contains both scenarios.
-- When Change B archives, `buildUpdatedSpec` sees a `MODIFIED` block for `Slash Command Configuration` and replaces the requirement with the four-scenario variant shipped in that change. Because that file never learned about Windsurf, the Windsurf scenario disappears.
-- There is no warning, diff, or conflict indicator—the archive completes successfully, and the source-of-truth spec now omits a shipped scenario.
+## 观察到的失败模式
+- 变更 A（`add-windsurf-workflows`）在"斜杠命令配置"下添加了 Windsurf 场景。
+- 变更 B（`add-kilocode-workflows`）向同一需求添加了 Kilo Code 场景，但其起点是 pre-Windsurf 规格。
+- 变更 A 归档后，主规格包含两个场景。
+- 当变更 B 归档时，`buildUpdatedSpec` 看到"斜杠命令配置"的 `MODIFIED` 块，并用该变更中包含的四场景变体替换需求。由于该文件从未了解过 Windsurf，Windsurf 场景消失了。
+- 没有警告、差异或冲突指示——归档成功完成，权威规格现在遗漏了一个已交付的场景。
 
-## Root Causes
-1. **Replace-only semantics.** `buildUpdatedSpec` performs hash-map substitution of requirement blocks and cannot merge or compare individual scenarios (`src/core/archive.ts:455`-`src/core/archive.ts:526`).
-2. **Missing base fingerprint.** Changes do not persist the requirement content they were authored against, so the archive step cannot tell if the live spec diverged.
-3. **Single-level granularity.** The delta language only understands requirements. Even if we introduced scenario-level parsing, we would still lose sibling edits without an accompanying merge strategy.
-4. **Lack of conflict UX.** The CLI never forces contributors to reconcile parallel updates. There is no equivalent of `git merge`, `git rebase`, or conflict markers.
+## 根本原因
+1. **仅替换语义。** `buildUpdatedSpec` 执行需求块的哈希映射替换，无法合并或比较单个场景（`src/core/archive.ts:455`-`src/core/archive.ts:526`）。
+2. **缺少基准指纹。** 变更不持久化它们所针对的需求内容，因此归档步骤无法判断实际规格是否分歧。
+3. **单一级别粒度。** 增量语言仅理解需求。即使我们引入场景级解析，如果没有配套的合并策略，我们仍会丢失同级编辑。
+4. **缺乏冲突用户体验。** CLI 从未强制贡献者协调并行更新。没有类似 `git merge`、`git rebase` 或冲突标记的功能。
 
-## Design Objectives
-- Preserve every approved scenario regardless of archive order.
-- Detect and block speculative archives when the live spec diverges from the author’s base.
-- Provide a deterministic, reviewable conflict resolution flow that mirrors source-control best practices.
-- Keep the authoring experience ergonomic: deltas should remain human-editable markdown.
-- Support incremental adoption so existing repositories can roll forward without breaking active work.
+## 设计目标
+- 无论归档顺序如何，保留每个已批准的场景。
+- 检测并阻止当实际规格与作者的基准分歧时的投机性归档。
+- 提供确定性的、可审查的冲突解决流程，借鉴源码管理最佳实践。
+- 保持创作体验的人体工程学：增量应保持人类可编辑的 markdown。
+- 支持增量采用，使现有仓库可以向前滚动而不破坏活动中的工作。
 
-## Proposed Fix: Layered Remediation
+## 拟议修复：分层 remediation
 
-### Phase 0 – Stop the Bleeding (Detection & Guardrails)
-1. **Persist requirement fingerprints alongside each change.**
-   - When scaffolding or validating a change, capture the current requirement body for every `MODIFIED`/`REMOVED`/`RENAMED` entry and write it to `changes/<id>/meta.json`.
-   - Store a stable hash (e.g., SHA-256) of the base requirement content and the raw text itself for later merges.
-2. **Validate fingerprints during archive.**
-   - Before `buildUpdatedSpec` mutates specs, recompute the requirement hash from the live spec.
-   - If the hash differs from the stored base, abort and instruct the user to rebase. This makes the destructive path impossible.
-3. **Surface intent in CLI output.**
-   - Show which requirements are stale, when they diverged, and which change last touched them.
-4. **Document interim manual mitigation.**
-   - Update `openspec/AGENTS.md` and docs so contributors know to rerun `openspec change sync` (see Phase 1) whenever another change lands.
+### 阶段 0 – 止血（检测和保护）
+1. **持久化需求指纹以及每个变更。**
+   - 在搭建或验证变更时，捕获每个 `MODIFIED`/`REMOVED`/`RENAMED` 条目的当前需求体，并将其写入 `changes/<id>/meta.json`。
+   - 存储基准需求内容的稳定哈希（例如 SHA-256）和原始文本，供后续合并使用。
+2. **在归档期间验证指纹。**
+   - 在 `buildUpdatedSpec` 改变规格之前，从实际规格重新计算需求哈希。
+   - 如果哈希与存储的基准不同，则中止并指示用户 rebase。这使得破坏性路径不可能。
+3. **在 CLI 输出中显示意图。**
+   - 显示哪些需求已过时、何时分歧、以及哪个变更最后触及它们。
+4. **记录临时手动缓解措施。**
+   - 更新 `openspec/AGENTS.md` 和文档，以便贡献者知道在另一个变更落地时重新运行 `openspec change sync`（见阶段 1）。
 
-_Outcome:_ We prevent data loss immediately while we work on a richer merge story.
+_结果：_ 我们在开发更丰富的合并故事的同时立即防止数据丢失。
 
-### Phase 1 – Add a Rebase Workflow (Author-Side Merge)
-1. **Introduce `openspec change sync <id>` (or `rebase`).**
-   - Reads the stored base snapshot, the current spec, and the author’s delta.
-   - Performs a 3-way merge per requirement. A naive diff3 on markdown lines is acceptable initially because we already operate on requirement-sized chunks.
-   - If the merge is clean, rewrite the `MODIFIED` block with the merged text and refresh the stored fingerprint.
-   - On conflict, write conflict markers inside the change delta (similar to Git) and require the author to hand-edit before re-running validation.
-2. **Enrich validator messages.**
-   - `openspec validate` should flag unresolved conflict markers or fingerprint mismatches so errors appear early in the workflow.
-3. **Optional:** Offer a `--rewrite-scenarios` helper that merges bullet lists of scenarios to reduce manual editing noise.
+### 阶段 1 – 添加 Rebase 工作流（作者端合并）
+1. **引入 `openspec change sync <id>`（或 `rebase`）。**
+   - 读取存储的基准快照、当前规格和作者的增量。
+   - 对每个需求执行 3-way 合并。最初使用简单的 diff3 对 markdown 行进行合并是可以接受的，因为我们已经在需求大小的块上操作。
+   - 如果合并干净，用合并后的文本重写 `MODIFIED` 块并刷新存储的指纹。
+   - 发生冲突时，在变更增量内写入冲突标记（类似于 Git），并要求作者在重新运行验证之前手动编辑。
+2. **丰富验证器消息。**
+   - `openspec validate` 应标记未解决的冲突标记或指纹不匹配，以便错误在工作流早期出现。
+3. **可选：** 提供 `--rewrite-scenarios` 帮助程序，合并场景的项目符号列表以减少手动编辑噪音。
 
-_Outcome:_ Contributors can safely reconcile their work with the latest spec before archiving, restoring true parallel development.
+_结果：_ 贡献者可以在归档之前安全地将他们的工作与最新规格协调，恢复真正的并行开发。
 
-### Phase 2 – Increase Delta Granularity
-1. **Extend the delta language with scenario-level directives.**
-   - Allow `## MODIFIED Requirements` + `## ADDED Scenarios` / `## MODIFIED Scenarios` sections nested under the requirement header.
-   - Backed by stable scenario identifiers (explicit IDs or generated hashes) stored in `meta.json`. This lets the system reason about individual scenarios.
-2. **Teach the parser to understand nested operations.**
-   - Update `parseDeltaSpec` to emit scenario-level operations in addition to requirement blocks.
-   - Update `buildUpdatedSpec` (or its replacement) to merge scenario lists, preserving order while inserting new entries in a deterministic fashion.
-3. **Automate migration.**
-   - Provide a one-time command that inspects each existing spec, injects scenario IDs, and rewrites in-flight change deltas into the richer format.
-4. **Continue to rely on the Phase 1 rebase flow for conflicts when two changes edit the same scenario body or description.**
+### 阶段 2 – 增加增量粒度
+1. **使用场景级指令扩展增量语言。**
+   - 允许 `## MODIFIED Requirements` + `## ADDED Scenarios` / `## MODIFIED Scenarios` 部分嵌套在需求标题下。
+   - 由存储在 `meta.json` 中的稳定场景标识符（显式 ID 或生成的哈希）支持。这让系统能够对单个场景进行推理。
+2. **教解析器理解嵌套操作。**
+   - 更新 `parseDeltaSpec` 以发出场景级操作以及需求块。
+   - 更新 `buildUpdatedSpec`（或其替代品）以合并场景列表，在以确定性方式插入新条目时保留顺序。
+3. **自动化迁移。**
+   - 提供一次性命令，检查每个现有规格、注入场景 ID，并将飞行中的变更增量重写为更丰富的格式。
+4. **继续依赖阶段 1 的 rebase 流程来处理两个变更编辑同一场景体或描述时的冲突。**
 
-_Outcome:_ Most concurrent updates become commutative, drastically reducing the odds of human merges.
+_结果：_ 大多数并发更新变得可交换，极大地减少了人工合并的可能性。
 
-### Phase 3 – Structured Spec Graph (Long-Term)
-1. **Define stable requirement IDs.**
-   - Embed `Requirement ID: <uuid>` markers in specs so renames and moves are trackable.
-   - This enables future features like cross-capability references and better diff visualizations.
-2. **Model spec edits as operations over an AST.**
-   - Build an intermediate representation (IR) for requirements/scenarios/metadata.
-   - Use operational transforms or CRDT-like techniques to guarantee merge associativity.
-3. **Integrate with Git directly.**
-   - Offer optional `openspec branch` scaffolding that aligns spec changes with Git branches, letting teams leverage Git’s conflict editor for the markdown IR.
+### 阶段 3 – 结构化规格图（长期）
+1. **定义稳定的需求 ID。**
+   - 在规格中嵌入 `Requirement ID: <uuid>` 标记，以便可跟踪重命名和移动。
+   - 这支持跨能力引用和更好的差异可视化等未来功能。
+2. **将规格编辑建模为对 AST 的操作。**
+   - 为需求/场景/元数据构建中间表示（IR）。
+   - 使用操作转换或类似 CRDT 的技术来保证合并结合性。
+3. **直接与 Git 集成。**
+   - 提供可选的 `openspec branch` 搭建，将规格变更与 Git 分支对齐，让团队利用 Git 的冲突编辑器处理 markdown IR。
 
-_Outcome:_ OpenSpec graduates from replace-based updates to a resilient, intent-preserving spec management platform.
+_结果：_ OpenSpec 从基于替换的更新毕业为弹性的、保留意图的规格管理平台。
 
-## Migration & Product Impacts
-- **Backfill metadata:** add hashes for all active changes and the current main specs during the initial rollout.
-- **CLI UX:** new commands (`change sync`, enhanced `archive`) require documentation, help text, and release notes.
-- **Docs & AGENTS updates:** reinforce the rebase workflow and explain conflict resolution to AI assistants.
-- **Testing:** introduce fixtures covering divergent requirement fingerprints and merge resolution logic.
-- **Telemetry (optional):** log fingerprint mismatches so we can see how often teams hit conflicts after the rollout.
+## 迁移和产品影响
+- **回填元数据：** 在初始推广期间为所有活动变更和当前主规格添加哈希。
+- **CLI 用户体验：** 新命令（`change sync`、增强的 `archive`）需要文档、帮助文本和发布说明。
+- **文档和 AGENTS 更新：** 加强 rebase 工作流并向 AI 助手解释冲突解决。
+- **测试：** 引入涵盖分歧需求指纹和合并 resolution 逻辑的测试夹具。
+- **遥测（可选）：** 记录指纹不匹配，以便我们可以看到推出后团队遇到冲突的频率。
 
-## Open Questions / Risks
-- How should we order scenarios when multiple changes insert at different points? (Consider optional `position` metadata or deterministic alphabetical fallbacks.)
-- What is the graceful failure mode if contributors delete the `meta.json` file? (CLI should recreate fingerprints on demand.)
-- Do we need to support offline authors who cannot easily re-run the sync command before archiving? (Potential `--accept-outdated` escape hatch for emergencies.)
-- How will archived historical changes be handled? We may need a migration script to embed fingerprints retroactively so re-validation succeeds.
+## 开放问题/风险
+- 当多个变更在不同点插入时，我们应该如何排序场景？（考虑可选的 `position` 元数据或确定性的字母 fallback。）
+- 如果贡献者删除 `meta.json` 文件，优雅的失败模式是什么？（CLI 应按需重新创建指纹。）
+- 我们是否需要支持无法在归档前轻松重新运行 sync 命令的离线作者？（用于紧急情况的潜在 `--accept-outdated` escape hatch。）
+- 如何处理已归档的历史变更？我们可能需要一个迁移脚本，主动嵌入指纹以便重新验证成功。
 
-## Immediate Next Steps
-1. Prototype fingerprint capture during `openspec change validate` and block archive on mismatches.
-2. Ship `openspec change sync` with line-based diff3 merging and conflict markers.
-3. Update contributor docs and AI instructions to mandate running `sync` before archiving.
-4. Plan the scenario-level delta extension and migration path as a follow-up RFC.
+## 立即下一步
+1. 在 `openspec change validate` 期间原型化指纹捕获，并在不匹配时阻止归档。
+2. 交付带有基于行的 diff3 合并和冲突标记的 `openspec change sync`。
+3. 更新贡献者文档和 AI 指令，要求在归档前运行 `sync`。
+4. 将场景级增量扩展和迁移路径规划为后续 RFC。

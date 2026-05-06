@@ -1,122 +1,122 @@
-# telemetry Specification
+# 遥测规范
 
-## Purpose
+## 目的
 
-This spec defines how OpenSpec collects anonymous usage telemetry to help improve the tool. It governs the `src/telemetry/` module, which handles PostHog integration, privacy-preserving event design, user opt-out mechanisms, and first-run notice display. The spec ensures telemetry is minimal, transparent, and respects user privacy.
+本规范定义了 OpenSpec 如何收集匿名使用遥测数据以帮助改进工具。它管辖 `src/telemetry/` 模块，该模块处理 PostHog 集成、隐私保护事件设计、用户选择退出机制以及首次运行通知显示。本规范确保遥测数据最小化、透明化，并尊重用户隐私。
 
-## Requirements
+## 需求
 
-### Requirement: Command execution tracking
-The system SHALL send a `command_executed` event to PostHog when any CLI command executes, including only the command name and OpenSpec version as properties.
+### 需求：命令执行追踪
+系统应在任何 CLI 命令执行时向 PostHog 发送 `command_executed` 事件，仅包含命令名称和 OpenSpec 版本作为属性。
 
-#### Scenario: Standard command execution
-- **WHEN** a user runs any openspec command
-- **THEN** the system sends a `command_executed` event with `command` and `version` properties
+#### 场景：标准命令执行
+- **当** 用户运行任何 openspec 命令
+- **那么** 系统发送带有 `command` 和 `version` 属性的 `command_executed` 事件
 
-#### Scenario: Subcommand execution
-- **WHEN** a user runs a nested command like `openspec change apply`
-- **THEN** the system sends a `command_executed` event with the full command path (e.g., `change:apply`)
+#### 场景：子命令执行
+- **当** 用户运行嵌套命令如 `openspec change apply`
+- **那么** 系统发送带有完整命令路径的 `command_executed` 事件（例如 `change:apply`）
 
-### Requirement: Privacy-preserving event design
-The system SHALL NOT include command arguments, file paths, project names, spec content, error messages, or IP addresses in telemetry events.
+### 需求：隐私保护事件设计
+系统不得在遥测事件中包含命令参数、文件路径、项目名称、规范内容、错误消息或 IP 地址。
 
-#### Scenario: Command with arguments
-- **WHEN** a user runs `openspec init my-project --force`
-- **THEN** the telemetry event contains only `command: "init"` and `version: "<version>"` without arguments
+#### 场景：带参数的命令
+- **当** 用户运行 `openspec init my-project --force`
+- **那么** 遥测事件仅包含 `command: "init"` 和 `version: "<version>"`，不包含参数
 
-#### Scenario: IP address exclusion
-- **WHEN** the system sends a telemetry event
-- **THEN** the event explicitly sets `$ip: null` to prevent IP tracking
+#### 场景：IP 地址排除
+- **当** 系统发送遥测事件时
+- **那么** 事件明确设置 `$ip: null` 以防止 IP 追踪
 
-### Requirement: Environment variable opt-out
-The system SHALL disable telemetry when `OPENSPEC_TELEMETRY=0` or `DO_NOT_TRACK=1` environment variables are set.
+### 需求：环境变量选择退出
+当设置 `OPENSPEC_TELEMETRY=0` 或 `DO_NOT_TRACK=1` 环境变量时，系统应禁用遥测。
 
-#### Scenario: OPENSPEC_TELEMETRY opt-out
-- **WHEN** `OPENSPEC_TELEMETRY=0` is set in the environment
-- **THEN** the system sends no telemetry events
+#### 场景：OPENSPEC_TELEMETRY 选择退出
+- **当** 环境中设置了 `OPENSPEC_TELEMETRY=0`
+- **那么** 系统不发送任何遥测事件
 
-#### Scenario: DO_NOT_TRACK opt-out
-- **WHEN** `DO_NOT_TRACK=1` is set in the environment
-- **THEN** the system sends no telemetry events
+#### 场景：DO_NOT_TRACK 选择退出
+- **当** 环境中设置了 `DO_NOT_TRACK=1`
+- **那么** 系统不发送任何遥测事件
 
-#### Scenario: Environment variable takes precedence
-- **WHEN** the user has previously used the CLI (config exists)
-- **AND** the user sets `OPENSPEC_TELEMETRY=0`
-- **THEN** telemetry is disabled regardless of config state
+#### 场景：环境变量优先
+- **当** 用户之前使用过 CLI（配置存在）
+- **并且** 用户设置了 `OPENSPEC_TELEMETRY=0`
+- **那么** 无论配置状态如何，遥测都被禁用
 
-### Requirement: CI environment auto-disable
-The system SHALL automatically disable telemetry when `CI=true` environment variable is detected.
+### 需求：CI 环境自动禁用
+当检测到 `CI=true` 环境变量时，系统应自动禁用遥测。
 
-#### Scenario: CI environment detection
-- **WHEN** `CI=true` is set in the environment
-- **THEN** the system sends no telemetry events
+#### 场景：CI 环境检测
+- **当** 环境中设置了 `CI=true`
+- **那么** 系统不发送任何遥测事件
 
-#### Scenario: CI with explicit enable
-- **WHEN** `CI=true` is set
-- **AND** `OPENSPEC_TELEMETRY=1` is explicitly set
-- **THEN** telemetry remains disabled (CI takes precedence for privacy)
+#### 场景：CI 与显式启用
+- **当** 设置了 `CI=true`
+- **并且** 显式设置了 `OPENSPEC_TELEMETRY=1`
+- **那么** 遥测保持禁用状态（CI 优先以保护隐私）
 
-### Requirement: First-run telemetry notice
-The system SHALL display a one-line telemetry disclosure notice on the first command execution, before any telemetry is sent.
+### 需求：首次运行遥测通知
+系统应在首次命令执行时显示一行遥测披露通知，在发送任何遥测数据之前。
 
-#### Scenario: First command execution
-- **WHEN** a user runs their first openspec command
-- **AND** telemetry is enabled
-- **THEN** the system displays: "Note: OpenSpec collects anonymous usage stats. Opt out: OPENSPEC_TELEMETRY=0"
+#### 场景：首次命令执行
+- **当** 用户运行第一个 openspec 命令
+- **并且** 遥测已启用
+- **那么** 系统显示："注意：OpenSpec 收集匿名使用统计。退出选项：OPENSPEC_TELEMETRY=0"
 
-#### Scenario: Subsequent command execution
-- **WHEN** a user has already seen the notice (noticeSeen: true in config)
-- **THEN** the system does not display the notice
+#### 场景：后续命令执行
+- **当** 用户已看过通知（配置中 `noticeSeen: true`）
+- **那么** 系统不显示通知
 
-#### Scenario: Notice before telemetry
-- **WHEN** displaying the first-run notice
-- **THEN** the notice appears before any telemetry event is sent
+#### 场景：通知在遥测之前
+- **当** 显示首次运行通知时
+- **那么** 通知在任何遥测事件发送之前出现
 
-### Requirement: Anonymous user identification
-The system SHALL generate a random UUID as an anonymous identifier on first telemetry send, stored in global config.
+### 需求：匿名用户识别
+系统应在首次遥测发送时生成随机 UUID 作为匿名标识符，存储在全局配置中。
 
-#### Scenario: First telemetry event
-- **WHEN** the first telemetry event is sent
-- **AND** no anonymousId exists in config
-- **THEN** the system generates a random UUID v4 and stores it in config
+#### 场景：首次遥测事件
+- **当** 发送第一个遥测事件
+- **并且** 配置中不存在 `anonymousId`
+- **那么** 系统生成随机 UUID v4 并将其存储在配置中
 
-#### Scenario: Persistent identity
-- **WHEN** a user runs multiple commands across sessions
-- **THEN** the same anonymousId is used for all events
+#### 场景：持久身份
+- **当** 用户跨会话运行多个命令时
+- **那么** 所有事件使用相同的 `anonymousId`
 
-#### Scenario: Lazy generation with opt-out
-- **WHEN** a user opts out before running any command
-- **THEN** no anonymousId is ever generated or stored
+#### 场景：延迟生成与选择退出
+- **当** 用户在任何命令运行之前选择退出
+- **那么** 永远不会生成或存储 `anonymousId`
 
-### Requirement: Immediate event sending
-The system SHALL send telemetry events immediately without batching, using `flushAt: 1` and `flushInterval: 0` configuration.
+### 需求：即时事件发送
+系统应使用 `flushAt: 1` 和 `flushInterval: 0` 配置立即发送遥测事件，不进行批处理。
 
-#### Scenario: Event transmission timing
-- **WHEN** a command executes
-- **THEN** the telemetry event is sent immediately, not queued for batch transmission
+#### 场景：事件传输时机
+- **当** 命令执行时
+- **那么** 遥测事件立即发送，不排队等待批量传输
 
-### Requirement: Graceful shutdown
-The system SHALL call `posthog.shutdown()` before CLI exit to ensure pending events are flushed.
+### 需求：优雅关闭
+系统应在 CLI 退出前调用 `posthog.shutdown()` 以确保待处理事件被刷新。
 
-#### Scenario: Normal exit
-- **WHEN** a command completes successfully
-- **THEN** the system awaits `shutdown()` before exiting
+#### 场景：正常退出
+- **当** 命令成功完成时
+- **那么** 系统在退出前等待 `shutdown()`
 
-#### Scenario: Error exit
-- **WHEN** a command fails with an error
-- **THEN** the system still awaits `shutdown()` before exiting
+#### 场景：错误退出
+- **当** 命令因错误失败时
+- **那么** 系统仍在退出前等待 `shutdown()`
 
-### Requirement: Silent failure handling
-The system SHALL silently ignore telemetry failures without affecting CLI functionality.
+### 需求：静默失败处理
+系统应静默忽略遥测失败，不影响 CLI 功能。
 
-#### Scenario: Network failure
-- **WHEN** the telemetry request fails due to network error
-- **THEN** the CLI command completes normally without error message
+#### 场景：网络故障
+- **当** 遥测请求因网络错误失败时
+- **那么** CLI 命令正常完成，不显示错误消息
 
-#### Scenario: PostHog outage
-- **WHEN** PostHog service is unavailable
-- **THEN** the CLI command completes normally without error message
+#### 场景：PostHog 服务中断
+- **当** PostHog 服务不可用时
+- **那么** CLI 命令正常完成，不显示错误消息
 
-#### Scenario: Shutdown failure
-- **WHEN** `shutdown()` fails or times out
-- **THEN** the CLI exits normally without error message
+#### 场景：关闭失败
+- **当** `shutdown()` 失败或超时时
+- **那么** CLI 正常退出，不显示错误消息

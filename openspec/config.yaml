@@ -1,36 +1,36 @@
 schema: spec-driven
 
 context: |
-  Tech stack: TypeScript, Node.js (≥20.19.0), ESM modules
-  Package manager: pnpm
-  CLI framework: Commander.js
+  技术栈：TypeScript、Node.js（≥20.19.0）、ESM 模块
+  包管理器：pnpm
+  CLI 框架：Commander.js
 
-  Product language:
-  - Write OpenSpec proposals and specs in user-facing product behavior language
-  - Requirements should describe the experience, observable behavior, and product contract
-  - Avoid implementation-negative SHALL statements when a positive user outcome can express the same rule
-  - Put internal mechanisms in design.md or tasks.md unless the mechanism is itself part of the user-facing contract
+  产品语言：
+  - 使用面向用户的产品行为语言编写 OpenSpec 提案和规格
+  - 需求应描述体验、可观察行为和产品契约
+  - 当肯定的用户结果可以表达相同规则时，避免否定实现的 SHALL 语句
+  - 将内部机制放在 design.md 或 tasks.md 中，除非机制本身就是面向用户契约的一部分
 
-  Cross-platform requirements:
-  - This tool runs on macOS, Linux, AND Windows
-  - Always use path.join() or path.resolve() for file paths - never hardcode slashes
-  - Never assume forward-slash path separators
-  - Tests must use path.join() for expected path values, not hardcoded strings
-  - Consider case sensitivity differences in file systems
+  跨平台需求：
+  - 此工具在 macOS、Linux 和 Windows 上运行
+  - 始终使用 path.join() 或 path.resolve() 处理文件路径 - 绝不硬编码斜杠
+  - 绝不假设正斜杠路径分隔符
+  - 测试必须使用 path.join() 处理预期路径值，而不是硬编码字符串
+  - 考虑文件系统的大小写敏感性差异
 
 rules:
   specs:
-    - Include scenarios for Windows path handling when dealing with file paths
-    - Requirements involving paths must specify cross-platform behavior
-    - Prefer user-facing product behavior and observable outcomes over internal implementation mechanics
-    - Include HOW details only when the mechanism is part of the product contract
-    - If we generate artifacts, specify deletion/modification by explicit list lookup, not pattern matching
+    - 在处理文件路径时包含 Windows 路径处理的场景
+    - 涉及路径的需求必须指定跨平台行为
+    - 优先考虑面向用户的产品行为和可观察结果，而不是内部实现机制
+    - 仅当机制是产品契约的一部分时才包含 HOW 细节
+    - 如果我们生成产物，通过显式列表查找指定删除/修改，而不是模式匹配
   tasks:
-    - Add Windows CI verification as a task when changes involve file paths
-    - Include cross-platform testing considerations
+    - 当变更涉及文件路径时，将 Windows CI 验证添加为任务
+    - 包含跨平台测试考虑
   design:
-    - Document any platform-specific behavior or limitations
-    - Prefer Node.js path module over string manipulation for paths
-    - Use existing constants and lists - don't invent detection mechanisms
-    - Prefer explicit lookups over pattern matching or regex
-    - If we generate it, we track it by name in a constant
+    - 记录任何平台特定行为或限制
+    - 优先使用 Node.js path 模块而不是字符串操作处理路径
+    - 使用现有常量和列表 - 不要发明检测机制
+    - 优先使用显式查找而不是模式匹配或正则表达式
+    - 如果我们生成它，我们通过名称在常量中跟踪它
