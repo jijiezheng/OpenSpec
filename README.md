@@ -117,6 +117,13 @@ openspec init
 → **[自定义](docs/customization.md)**：让它适合你
 
 
+## Community schemas
+
+Third-party schema bundles distributed via standalone repositories — these provide opinionated workflows that integrate OpenSpec with other tools, similar to how [github/spec-kit's community extension catalog](https://github.com/github/spec-kit/tree/main/extensions) handles tool integrations.
+
+→ **[Browse the catalog](docs/customization.md#community-schemas)** in the customization docs.
+
+
 ## 为什么选择 OpenSpec？
 
 AI 编码助手很强大，但当需求仅存在于聊天历史中时，它们是不可预测的。OpenSpec 添加了一个轻量级的规格层，让你在写任何代码之前就同意要构建什么。
