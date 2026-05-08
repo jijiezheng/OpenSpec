@@ -297,7 +297,7 @@ AI 会帮助你识别什么是 essential 的，什么可以修剪。
 | `/opsx:continue` | 一次创建一个产物 |
 | `/opsx:ff` | 快进 — 一次创建规划产物 |
 | `/opsx:verify` | 验证实施符合规格 |
-| `/opsx:sync` | 预览/规格合并但不归档 |
+| `/opsx:sync` | Merge delta specs into main specs |
 | `/opsx:bulk-archive` | 一次归档多个变更 |
 | `/opsx:onboard` | 引导式端到端入职工作流 |
 
